@@ -1,4 +1,13 @@
-# HA Fleet Monitor
+<p align="center">
+  <img src="https://www.home-assistant.io/images/favicon-192x192.png" height=50>
+</p>
+
+<h1 align="center">HA Fleet Monitor</h1>
+
+<p align="center" style="display: flex;">
+  <a href="https://github.com/geertmeersman"><img src="https://img.shields.io/badge/maintainer-Geert%20Meersman-green?style=for-the-badge&logo=github"></a>
+  <a href="https://www.buymeacoffee.com/geertmeersman"><img src="https://img.shields.io/badge/Buy%20me%20an%20Omer-donate-yellow?style=for-the-badge&logo=buymeacoffee"></a>
+</p>
 
 A self-hosted dashboard to monitor and manage multiple Home Assistant instances from a single interface.
 
