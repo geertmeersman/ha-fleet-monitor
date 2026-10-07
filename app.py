@@ -3,11 +3,21 @@ import smtplib
 import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from flask import Flask, jsonify, render_template, request
+from functools import wraps
+from flask import Flask, jsonify, render_template, request, session, redirect, url_for
 from apscheduler.schedulers.background import BackgroundScheduler
 from db import init_db, get_instances, upsert_instance, delete_instance
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("authenticated"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
 
 def check_instance(instance):
     headers = {
@@ -176,7 +186,22 @@ def send_weekly_email():
 
 # --- ROUTES ---
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        if request.form.get("password") == os.environ.get("APP_PASSWORD"):
+            session["authenticated"] = True
+            return redirect(url_for("index"))
+        return render_template("login.html", error="Ongeldig wachtwoord")
+    return render_template("login.html", error=None)
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
+
 @app.route("/api/config")
+@login_required
 def api_config():
     return jsonify({
         "test_mode": os.environ.get("SMTP_TEST_MODE", "false").lower() == "true",
@@ -184,33 +209,40 @@ def api_config():
     })
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 @app.route("/admin")
+@login_required
 def admin():
     return render_template("admin.html")
 
 @app.route("/api/instances", methods=["GET"])
+@login_required
 def api_get_instances():
     return jsonify(get_instances())
 
 @app.route("/api/instances", methods=["POST"])
+@login_required
 def api_upsert_instance():
     b = request.get_json()
     upsert_instance(b["id"], b["name"], b["url"], b["token"], b.get("email", ""), b.get("managed", False))
     return jsonify({"status": "ok"})
 
 @app.route("/api/instances/<instance_id>", methods=["DELETE"])
+@login_required
 def api_delete_instance(instance_id):
     delete_instance(instance_id)
     return jsonify({"status": "ok"})
 
 @app.route("/api/status")
+@login_required
 def status_api():
     return jsonify([check_instance(inst) for inst in get_instances()])
 
 @app.route("/api/restart", methods=["POST"])
+@login_required
 def restart_api():
     body = request.get_json()
     inst = next((i for i in get_instances() if i["id"] == body.get("instance_id")), None)
@@ -221,6 +253,7 @@ def restart_api():
     return jsonify({"status": "ok" if res.status_code == 200 else "error", "code": res.status_code})
 
 @app.route("/api/update", methods=["POST"])
+@login_required
 def update_api():
     body = request.get_json()
     inst = next((i for i in get_instances() if i["id"] == body.get("instance_id")), None)
@@ -231,6 +264,7 @@ def update_api():
     return jsonify({"status": "ok" if res.status_code == 200 else "error", "code": res.status_code})
 
 @app.route("/api/send-report", methods=["POST"])
+@login_required
 def api_send_report():
     send_weekly_email()
     return jsonify({"status": "ok"})

@@ -37,9 +37,14 @@ cd ha-monitor
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your SMTP credentials:
+Edit `.env` and fill in your SMTP credentials and password:
 
 ```env
+# Authentication
+APP_PASSWORD=your_password
+SECRET_KEY=your_random_secret_key
+
+# SMTP
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_USER=your@email.com
@@ -79,6 +84,16 @@ Go to `http://localhost:5000/admin` and add your Home Assistant instances:
 3. Scroll to **Long-Lived Access Tokens**
 4. Click **Create Token**
 
+## Authentication
+
+All pages and API endpoints are protected by a password. Set `APP_PASSWORD` in `.env` to enable login.
+
+A `SECRET_KEY` is required for secure session encryption — use a long random string:
+
+```bash
+python3 -c "import secrets; print(secrets.token_hex(32))"
+```
+
 ## Email Reports
 
 - Sent automatically every **Monday at 08:00**
@@ -97,7 +112,8 @@ Set `SMTP_TEST_MODE=true` in `.env` to redirect all emails to `SMTP_TEST_RECIPIE
 ha-monitor/
 ├── templates/
 │   ├── index.html       # Dashboard
-│   └── admin.html       # Admin panel
+│   ├── admin.html       # Admin panel
+│   └── login.html       # Login page
 ├── app.py               # Flask app, routes, email logic
 ├── db.py                # SQLite database helpers
 ├── docker-compose.yml
