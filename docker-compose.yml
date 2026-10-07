@@ -1,0 +1,18 @@
+services:
+  ha-monitor:
+    build: .
+    container_name: ha_fleet_monitor
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ha_monitor_data:/data
+    networks:
+      - internal
+
+volumes:
+  ha_monitor_data:
+
+networks:
+  internal:
+    external: true

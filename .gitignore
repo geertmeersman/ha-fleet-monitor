@@ -1,0 +1,20 @@
+# Gevoelige configuratie
+.env
+
+# Gegenereerde bestanden
+static/tailwind.css
+node_modules/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# OS
+.DS_Store
+Thumbs.db
