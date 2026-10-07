@@ -1,0 +1,71 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+version-resolver:
+  major:
+    labels: [breaking]
+  minor:
+    labels: [enhancement, feat]
+  patch:
+    labels: [bug, fix, dependencies, chore, ci, docs]
+  default: patch
+categories:
+  - title: '🚀 New features'
+    semver-increment: minor
+    when:
+      - labels:
+          - enhancement
+          - feat
+      - conventional:
+          type: feat
+  - title: '🐛 Bug fixes'
+    when:
+      - labels:
+          - bug
+          - fix
+      - conventional:
+          type: fix
+  - title: '🔒 Security'
+    when:
+      - label: security
+      - conventional:
+          type: security
+  - title: '📦 Dependencies'
+    when:
+      - label: dependencies
+      - conventional:
+          type: deps
+  - title: '🔧 Maintenance'
+    when:
+      - labels:
+          - chore
+          - ci
+          - refactor
+      - conventional:
+          types:
+            - chore
+            - ci
+            - refactor
+            - perf
+  - title: '📖 Documentation'
+    when:
+      - labels:
+          - docs
+          - documentation
+      - conventional:
+          type: docs
+  - type: pre-exclude
+    when:
+      label: skip-changelog
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+change-title-escapes: '\<*_&'
+template: |
+  ## What's changed
+
+  $CHANGES
+
+  ---
+  🙏 Thanks to $CONTRIBUTORS for contributing to this release!
+exclude-contributors:
+  - geertmeersman[bot]
+  - dependabot[bot]
+  - github-actions[bot]

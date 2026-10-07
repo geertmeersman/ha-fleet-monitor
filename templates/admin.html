@@ -1,9 +1,10 @@
+{% from 'macros.html' import lang_switcher, footer %}
 <!DOCTYPE html>
-<html lang="nl" class="dark">
+<html lang="{{ session.get('lang', 'en') }}" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HA Fleet Monitor — Beheer</title>
+    <title>HA Fleet Monitor — {{ _('Admin') }}</title>
     <link rel="icon" href="https://www.home-assistant.io/images/favicon-192x192.png">
     <link rel="stylesheet" href="/static/tailwind.css">
 </head>
@@ -11,67 +12,83 @@
     <div class="max-w-3xl mx-auto">
         <header class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
             <h1 class="text-2xl font-bold flex items-center gap-2">
-                <img src="https://www.home-assistant.io/images/favicon-192x192.png" class="w-7 h-7 inline"> Beheer
+                <img src="https://www.home-assistant.io/images/favicon-192x192.png" class="w-7 h-7 inline"> {{ _('Admin') }}
             </h1>
-            <a href="/" class="text-xs text-sky-400 hover:underline">← Terug naar dashboard</a>
-            <a href="/logout" class="text-xs text-slate-500 hover:text-slate-300">Uitloggen</a>
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-xs text-sky-400 hover:underline">← {{ _('Back to dashboard') }}</a>
+                {{ lang_switcher() }}
+                <a href="/logout" class="text-xs text-slate-500 hover:text-slate-300">{{ _('Logout') }}</a>
+            </div>
         </header>
 
         <div id="test-mode-banner" class="hidden mb-6 flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
             <span class="text-amber-400 text-lg">⚠️</span>
             <div>
-                <p class="text-sm font-semibold text-amber-400">E-mail testmodus actief</p>
-                <p class="text-xs text-slate-400">Alle mails worden verstuurd naar <span id="test-recipient" class="text-amber-300 font-mono"></span> i.p.v. het ingestelde adres per instantie.</p>
+                <p class="text-sm font-semibold text-amber-400">{{ _('Email test mode active') }}</p>
+                <p class="text-xs text-slate-400">{{ _('All emails are sent to') }} <span id="test-recipient" class="text-amber-300 font-mono"></span> {{ _('instead of the configured address per instance.') }}</p>
             </div>
         </div>
 
-        <!-- Formulier -->
         <div class="bg-slate-800/40 border border-slate-700 rounded-xl p-5 mb-8">
-            <h2 class="font-semibold text-slate-200 mb-4" id="form-title">Instantie toevoegen</h2>
+            <h2 class="font-semibold text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
             <div class="grid grid-cols-1 gap-3">
-                <input id="f-id"    type="text" placeholder="ID (bijv. e8)"         class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-name"  type="text" placeholder="Naam (bijv. E8)"        class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-url"   type="text" placeholder="URL (https://...)"      class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-token" type="password" placeholder="Long-lived token"   class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-email" type="email" placeholder="E-mailadres (optioneel)" class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-name"  type="text"     placeholder="{{ _('Name (e.g. Home)') }}"         class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-url"   type="text"     placeholder="{{ _('URL (https://...)') }}"        class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-token" type="password" placeholder="{{ _('Long-lived token') }}"         class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-email" type="email"    placeholder="{{ _('Email address (optional)') }}" class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
                 <label class="flex items-center gap-2 text-sm text-slate-300 mt-1">
-                    <input id="f-managed" type="checkbox" class="accent-sky-500"> Managed (zelf beheerd)
+                    <input id="f-managed" type="checkbox" class="accent-sky-500"> {{ _('Managed (self-managed)') }}
                 </label>
             </div>
             <div class="flex gap-2 mt-4">
-                <button onclick="saveInstance()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">Opslaan</button>
-                <button onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">Annuleren</button>
+                <button onclick="saveInstance()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
+                <button onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">{{ _('Cancel') }}</button>
             </div>
         </div>
 
-        <!-- Instanties lijst -->
         <div id="instances-list" class="space-y-3"></div>
 
-        <!-- Email rapport knop -->
         <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Wekelijks rapport wordt elke maandag om 08:00 verstuurd.</span>
-            <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 Rapport nu versturen</button>
+            <span class="text-xs text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
+            <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 {{ _('Send report now') }}</button>
         </div>
+        {{ footer() }}
     </div>
 
     <script>
+        const T = {
+            noInstances: "{{ _('No instances added yet.') }}",
+            noEmail: "{{ _('No email') }}",
+            managed: "{{ _('Managed') }}",
+            monitored: "{{ _('Monitored') }}",
+            edit: "{{ _('Edit') }}",
+            delete: "{{ _('Delete') }}",
+            addInstance: "{{ _('Add instance') }}",
+            editInstance: "{{ _('Edit instance') }}",
+            fillRequired: "{{ _('Fill in all required fields.') }}",
+            deleteConfirm: "{{ _('Are you sure you want to delete') }}",
+            sending: "{{ _('Sending...') }}",
+            sent: "{{ _('Sent') }}",
+        };
+
         async function loadInstances() {
             const res = await fetch('/api/instances');
             const instances = await res.json();
             const list = document.getElementById('instances-list');
             list.innerHTML = instances.length === 0
-                ? '<p class="text-sm text-slate-500">Nog geen instanties toegevoegd.</p>'
+                ? `<p class="text-sm text-slate-500">${T.noInstances}</p>`
                 : instances.map(i => `
                     <div class="bg-slate-800/40 border border-slate-700 rounded-xl p-4 flex justify-between items-center">
                         <div>
                             <p class="font-semibold text-slate-200">${i.name}</p>
                             <p class="text-xs text-sky-400">${i.url}</p>
-                            <p class="text-xs text-slate-500 mt-0.5">${i.email || 'Geen e-mail'}</p>
-                            <p class="text-xs mt-0.5">${i.managed ? '<span class="text-sky-400 font-semibold">Managed</span>' : '<span class="text-slate-500">Monitored</span>'}</p>
+                            <p class="text-xs text-slate-500 mt-0.5">${i.email || T.noEmail}</p>
+                            <p class="text-xs mt-0.5">${i.managed ? `<span class="text-sky-400 font-semibold">${T.managed}</span>` : `<span class="text-slate-500">${T.monitored}</span>`}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick='editInstance(${JSON.stringify(i)})' class="px-3 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-slate-200">Bewerken</button>
-                            <button onclick="deleteInstance('${i.id}')" class="px-3 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">Verwijderen</button>
+                            <button onclick='editInstance(${JSON.stringify(i)})' class="px-3 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-slate-200">${T.edit}</button>
+                            <button onclick="deleteInstance('${i.id}')" class="px-3 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">${T.delete}</button>
                         </div>
                     </div>
                 `).join('');
@@ -85,42 +102,42 @@
             document.getElementById('f-token').value = i.token;
             document.getElementById('f-email').value = i.email || '';
             document.getElementById('f-managed').checked = !!i.managed;
-            document.getElementById('form-title').textContent = 'Instantie bewerken';
+            document.getElementById('form-title').textContent = T.editInstance;
         }
 
         function resetForm() {
             ['f-id','f-name','f-url','f-token','f-email'].forEach(id => document.getElementById(id).value = '');
             document.getElementById('f-id').disabled = false;
             document.getElementById('f-managed').checked = false;
-            document.getElementById('form-title').textContent = 'Instantie toevoegen';
+            document.getElementById('form-title').textContent = T.addInstance;
         }
 
         async function saveInstance() {
             const body = {
-                id:    document.getElementById('f-id').value.trim(),
-                name:  document.getElementById('f-name').value.trim(),
-                url:   document.getElementById('f-url').value.trim(),
-                token: document.getElementById('f-token').value.trim(),
-                email: document.getElementById('f-email').value.trim(),
+                id:      document.getElementById('f-id').value.trim(),
+                name:    document.getElementById('f-name').value.trim(),
+                url:     document.getElementById('f-url').value.trim(),
+                token:   document.getElementById('f-token').value.trim(),
+                email:   document.getElementById('f-email').value.trim(),
                 managed: document.getElementById('f-managed').checked,
             };
-            if (!body.id || !body.name || !body.url || !body.token) return alert('Vul alle verplichte velden in.');
+            if (!body.id || !body.name || !body.url || !body.token) return alert(T.fillRequired);
             await fetch('/api/instances', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
             resetForm();
             loadInstances();
         }
 
         async function deleteInstance(id) {
-            if (!confirm(`Instantie "${id}" verwijderen?`)) return;
+            if (!confirm(`${T.deleteConfirm} "${id}"?`)) return;
             await fetch(`/api/instances/${id}`, { method: 'DELETE' });
             loadInstances();
         }
 
         async function sendReport(btn) {
             btn.disabled = true;
-            btn.textContent = 'Versturen...';
+            btn.textContent = T.sending;
             await fetch('/api/send-report', { method: 'POST' });
-            btn.textContent = '✓ Verstuurd';
+            btn.textContent = '✓ ' + T.sent;
         }
 
         loadInstances();

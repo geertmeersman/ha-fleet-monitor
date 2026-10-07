@@ -1,0 +1,151 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "HA Fleet Monitor"
+msgstr "HA Fleet Monitor"
+
+msgid "Loading..."
+msgstr "Chargement..."
+
+msgid "Admin"
+msgstr "Administration"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+msgid "Online"
+msgstr "En ligne"
+
+msgid "Offline"
+msgstr "Hors ligne"
+
+msgid "Auth Error"
+msgstr "Erreur d'auth"
+
+msgid "updates available"
+msgstr "mises à jour disponibles"
+
+msgid "Update all"
+msgstr "Tout mettre à jour"
+
+msgid "Install"
+msgstr "Installer"
+
+msgid "Up-to-date"
+msgstr "À jour"
+
+msgid "Reboot required"
+msgstr "Redémarrage requis"
+
+msgid "Restart now"
+msgstr "Redémarrer maintenant"
+
+msgid "Restart"
+msgstr "Redémarrer"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Last updated"
+msgstr "Dernière mise à jour"
+
+msgid "Managed"
+msgstr "Géré"
+
+msgid "Monitored"
+msgstr "Surveillé"
+
+msgid "Add instance"
+msgstr "Ajouter une instance"
+
+msgid "Edit instance"
+msgstr "Modifier l'instance"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "No instances added yet."
+msgstr "Aucune instance ajoutée."
+
+msgid "No email"
+msgstr "Pas d'e-mail"
+
+msgid "Weekly report is sent every Monday at 08:00."
+msgstr "Le rapport hebdomadaire est envoyé chaque lundi à 08h00."
+
+msgid "Send report now"
+msgstr "Envoyer le rapport maintenant"
+
+msgid "Sending..."
+msgstr "Envoi..."
+
+msgid "Sent"
+msgstr "Envoyé"
+
+msgid "Email test mode active"
+msgstr "Mode test e-mail actif"
+
+msgid "All emails are sent to"
+msgstr "Tous les e-mails sont envoyés à"
+
+msgid "instead of the configured address per instance."
+msgstr "au lieu de l'adresse configurée par instance."
+
+msgid "ID (e.g. home)"
+msgstr "ID (ex. maison)"
+
+msgid "Name (e.g. Home)"
+msgstr "Nom (ex. Maison)"
+
+msgid "URL (https://...)"
+msgstr "URL (https://...)"
+
+msgid "Long-lived token"
+msgstr "Jeton longue durée"
+
+msgid "Email address (optional)"
+msgstr "Adresse e-mail (optionnel)"
+
+msgid "Managed (self-managed)"
+msgstr "Géré (autogéré)"
+
+msgid "Fill in all required fields."
+msgstr "Remplissez tous les champs obligatoires."
+
+msgid "Delete instance"
+msgstr "Supprimer l'instance"
+
+msgid "Are you sure you want to delete"
+msgstr "Êtes-vous sûr de vouloir supprimer"
+
+msgid "Are you sure you want to restart this instance?"
+msgstr "Êtes-vous sûr de vouloir redémarrer cette instance ?"
+
+msgid "Restart sent"
+msgstr "Redémarrage envoyé"
+
+msgid "Failed"
+msgstr "Échec"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Invalid password"
+msgstr "Mot de passe invalide"
+
+msgid "Back to dashboard"
+msgstr "Retour au tableau de bord"

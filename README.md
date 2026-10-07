@@ -1,8 +1,43 @@
-# HA Fleet Monitor
+<p align="center">
+  <img src="https://www.home-assistant.io/images/favicon-192x192.png" height=50>
+</p>
+
+<h1 align="center">HA Fleet Monitor</h1>
+
+<p align="center">
+  <a href="https://github.com/geertmeersman"><img src="https://img.shields.io/badge/maintainer-Geert%20Meersman-green?style=for-the-badge&logo=github"></a>
+  <a href="https://www.buymeacoffee.com/geertmeersman"><img src="https://img.shields.io/badge/Buy%20me%20an%20Omer-donate-yellow?style=for-the-badge&logo=buymeacoffee"></a>
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg"></a>
+  <a href="https://discord.gg/VT3JXzZdvx"><img src="https://img.shields.io/discord/1555506302854234182?logo=discord&label=discord"></a>
+  <img src="https://img.shields.io/docker/pulls/geertmeersman/ha-fleet-monitor">
+  <img src="https://img.shields.io/docker/v/geertmeersman/ha-fleet-monitor?label=docker%20image%20version">
+</p>
+
+<p align="center">
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/ci.yml"><img src="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/ci.yml/badge.svg" alt="CI 🔬"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/release.yml"><img src="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/release.yml/badge.svg" alt="Release 🚀"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/unreleased.yml"><img src="https://github.com/geertmeersman/ha-fleet-monitor/actions/workflows/unreleased.yml/badge.svg" alt="Unreleased changes 🔍"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/issues"><img src="https://img.shields.io/github/issues/geertmeersman/ha-fleet-monitor"></a>
+  <a href="http://isitmaintained.com/project/geertmeersman/ha-fleet-monitor"><img src="http://isitmaintained.com/badge/resolution/geertmeersman/ha-fleet-monitor.svg"></a>
+  <a href="http://isitmaintained.com/project/geertmeersman/ha-fleet-monitor"><img src="http://isitmaintained.com/badge/open/geertmeersman/ha-fleet-monitor.svg"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/pulls"><img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg"></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/releases"><img src="https://img.shields.io/github/v/release/geertmeersman/ha-fleet-monitor?logo=github"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/releases"><img src="https://img.shields.io/github/release-date/geertmeersman/ha-fleet-monitor"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/commits"><img src="https://img.shields.io/github/last-commit/geertmeersman/ha-fleet-monitor"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/graphs/contributors"><img src="https://img.shields.io/github/contributors/geertmeersman/ha-fleet-monitor"></a>
+  <a href="https://github.com/geertmeersman/ha-fleet-monitor/commits/main"><img src="https://img.shields.io/github/commit-activity/y/geertmeersman/ha-fleet-monitor?logo=github"></a>
+</p>
 
 A self-hosted dashboard to monitor and manage multiple Home Assistant instances from a single interface.
-
-![Dashboard](https://www.home-assistant.io/images/favicon-192x192.png)
 
 ## Features
 
@@ -13,6 +48,8 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 - 🛠️ **Admin panel** — Add, edit and remove instances via a web UI (stored in SQLite)
 - 📧 **Weekly email report** — Automatic email every Monday at 08:00 with pending updates per instance
 - 🧪 **Test mode** — Redirect all emails to a test recipient without affecting production
+- 🔐 **Authentication** — Password protected via `.env`
+- 🔔 **Attention favicon** — Favicon blinks when updates or a reboot is required
 
 ## Stack
 
@@ -23,6 +60,36 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 - **Container**: Docker
 
 ## Getting Started
+
+### Using Docker Hub (recommended)
+
+No need to clone the repository. Create a `docker-compose.yml`:
+
+```yaml
+services:
+  ha-monitor:
+    image: geertmeersman/ha-fleet-monitor:latest
+    container_name: ha_fleet_monitor
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+```
+
+Create a `.env` file (see `.env.example` for all options) and start:
+
+```bash
+docker compose up -d
+```
+
+### Building from source
 
 ### 1. Clone the repository
 
@@ -37,25 +104,7 @@ cd ha-monitor
 cp .env.example .env
 ```
 
-Edit `.env` and fill in your SMTP credentials and password:
-
-```env
-# Authentication
-APP_PASSWORD=your_password
-SECRET_KEY=your_random_secret_key
-
-# SMTP
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your@email.com
-SMTP_PASS=your_app_password
-SMTP_FROM=HA Fleet Monitor <your@email.com>
-SMTP_TEST_MODE=false
-SMTP_TEST_RECIPIENT=your@email.com
-SMTP_ADMIN_CC=your@email.com
-```
-
-> **Gmail users**: use an [App Password](https://support.google.com/accounts/answer/185833) instead of your regular password.
+Fill in your credentials — see `.env.example` for all available options.
 
 ### 3. Build and start
 
@@ -67,67 +116,19 @@ The dashboard is available at `http://localhost:5000`.
 
 ### 4. Add your HA instances
 
-Go to `http://localhost:5000/admin` and add your Home Assistant instances:
-
-| Field | Description |
-|-------|-------------|
-| ID | Unique identifier (e.g. `home`, `office`) |
-| Name | Display name |
-| URL | Full URL including protocol (e.g. `https://ha.example.com`) |
-| Token | Long-lived access token from HA → Profile → Security |
-| Email | Email address to send update reports to |
-
-#### Generating a Long-Lived Access Token in HA
-
-1. Go to your HA instance
-2. Click your profile (bottom left)
-3. Scroll to **Long-Lived Access Tokens**
-4. Click **Create Token**
-
-## Authentication
-
-All pages and API endpoints are protected by a password. Set `APP_PASSWORD` in `.env` to enable login.
-
-A `SECRET_KEY` is required for secure session encryption — use a long random string:
-
-```bash
-python3 -c "import secrets; print(secrets.token_hex(32))"
-```
-
-## Email Reports
-
-- Sent automatically every **Monday at 08:00**
-- Only sent when updates are available
-- One email per instance
-- Admin CC receives a copy of every email
-- Can be triggered manually via the **Admin panel**
-
-### Test Mode
-
-Set `SMTP_TEST_MODE=true` in `.env` to redirect all emails to `SMTP_TEST_RECIPIENT`. A warning banner will appear in the admin panel when test mode is active.
-
-## Project Structure
-
-```
-ha-monitor/
-├── templates/
-│   ├── index.html       # Dashboard
-│   ├── admin.html       # Admin panel
-│   └── login.html       # Login page
-├── app.py               # Flask app, routes, email logic
-├── db.py                # SQLite database helpers
-├── docker-compose.yml
-├── Dockerfile
-├── requirements.txt
-├── tailwind.css         # Tailwind input
-├── tailwind.config.js   # Tailwind v3 config
-├── .env                 # Your config (not in git)
-└── .env.example         # Config template
-```
+Go to `http://localhost:5000/admin` and add your Home Assistant instances. You'll need a long-lived access token from each HA instance: **Profile → Security → Long-Lived Access Tokens**.
 
 ## Supported HA Setups
 
 | Setup | Version detection | Update detection |
-|-------|------------------|-----------------|
+|-------|------------------|-----------------:|
 | HAOS / Supervised | ✅ via `update.home_assistant_core_update` | ✅ via `update.*` entities |
 | Docker (custom sensors) | ✅ via `sensor.current_version` | ✅ via `sensor.docker_hub` |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, Tailwind CSS, linting, commit conventions and CI.
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](LICENSE).

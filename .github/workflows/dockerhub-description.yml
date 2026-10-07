@@ -1,0 +1,26 @@
+name: Docker Hub description 🐳
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - DOCKER_HUB.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  update-description:
+    name: Sync Docker Hub description
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Update Docker Hub description
+        uses: peter-evans/dockerhub-description@v5
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          readme-filepath: ./DOCKER_HUB.md
+          enable-url-completion: true

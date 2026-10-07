@@ -1,0 +1,151 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "HA Fleet Monitor"
+msgstr "HA Fleet Monitor"
+
+msgid "Loading..."
+msgstr "Loading..."
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "Logout"
+msgstr "Logout"
+
+msgid "Online"
+msgstr "Online"
+
+msgid "Offline"
+msgstr "Offline"
+
+msgid "Auth Error"
+msgstr "Auth Error"
+
+msgid "updates available"
+msgstr "updates available"
+
+msgid "Update all"
+msgstr "Update all"
+
+msgid "Install"
+msgstr "Install"
+
+msgid "Up-to-date"
+msgstr "Up-to-date"
+
+msgid "Reboot required"
+msgstr "Reboot required"
+
+msgid "Restart now"
+msgstr "Restart now"
+
+msgid "Restart"
+msgstr "Restart"
+
+msgid "Version"
+msgstr "Version"
+
+msgid "Last updated"
+msgstr "Last updated"
+
+msgid "Managed"
+msgstr "Managed"
+
+msgid "Monitored"
+msgstr "Monitored"
+
+msgid "Add instance"
+msgstr "Add instance"
+
+msgid "Edit instance"
+msgstr "Edit instance"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Cancel"
+msgstr "Cancel"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "No instances added yet."
+msgstr "No instances added yet."
+
+msgid "No email"
+msgstr "No email"
+
+msgid "Weekly report is sent every Monday at 08:00."
+msgstr "Weekly report is sent every Monday at 08:00."
+
+msgid "Send report now"
+msgstr "Send report now"
+
+msgid "Sending..."
+msgstr "Sending..."
+
+msgid "Sent"
+msgstr "Sent"
+
+msgid "Email test mode active"
+msgstr "Email test mode active"
+
+msgid "All emails are sent to"
+msgstr "All emails are sent to"
+
+msgid "instead of the configured address per instance."
+msgstr "instead of the configured address per instance."
+
+msgid "ID (e.g. home)"
+msgstr "ID (e.g. home)"
+
+msgid "Name (e.g. Home)"
+msgstr "Name (e.g. Home)"
+
+msgid "URL (https://...)"
+msgstr "URL (https://...)"
+
+msgid "Long-lived token"
+msgstr "Long-lived token"
+
+msgid "Email address (optional)"
+msgstr "Email address (optional)"
+
+msgid "Managed (self-managed)"
+msgstr "Managed (self-managed)"
+
+msgid "Fill in all required fields."
+msgstr "Fill in all required fields."
+
+msgid "Delete instance"
+msgstr "Delete instance"
+
+msgid "Are you sure you want to delete"
+msgstr "Are you sure you want to delete"
+
+msgid "Are you sure you want to restart this instance?"
+msgstr "Are you sure you want to restart this instance?"
+
+msgid "Restart sent"
+msgstr "Restart sent"
+
+msgid "Failed"
+msgstr "Failed"
+
+msgid "Password"
+msgstr "Password"
+
+msgid "Login"
+msgstr "Login"
+
+msgid "Invalid password"
+msgstr "Invalid password"
+
+msgid "Back to dashboard"
+msgstr "Back to dashboard"
