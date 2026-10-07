@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Calculate next version
         id: semver
@@ -26,6 +28,7 @@ jobs:
           branch: main
           patchAll: true
           fallbackTag: v0.0.0
+          noVersionBumpBehavior: patch
 
       - name: Print next version
         run: echo "Next calculated version ${{ steps.semver.outputs.next }}"
