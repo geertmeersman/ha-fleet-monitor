@@ -69,7 +69,7 @@ No need to clone the repository. Create a `docker-compose.yml`:
 services:
   ha-monitor:
     image: geertmeersman/ha-fleet-monitor:latest
-    container_name: ha_fleet_monitor
+    container_name: ha-fleet-monitor
     restart: unless-stopped
     env_file:
       - .env
@@ -88,6 +88,8 @@ Create a `.env` file (see `.env.example` for all options) and start:
 ```bash
 docker compose up -d
 ```
+
+The dashboard is available at the configured proxy URL, or add `ports: - "5000:5000"` to the compose file for direct access.
 
 ### Building from source
 
@@ -112,7 +114,7 @@ Fill in your credentials — see `.env.example` for all available options.
 docker compose up -d --build
 ```
 
-The dashboard is available at `http://localhost:5000`.
+The dashboard is available at the configured proxy URL, or at `http://localhost:5000` when using the standalone setup.
 
 ### 4. Add your HA instances
 

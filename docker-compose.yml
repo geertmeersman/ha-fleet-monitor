@@ -1,7 +1,7 @@
 services:
   ha-monitor:
     build: .
-    container_name: ha_fleet_monitor
+    container_name: ha-fleet-monitor
     restart: unless-stopped
     env_file:
       - .env
