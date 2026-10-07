@@ -25,6 +25,7 @@ jobs:
           token: ${{ github.token }}
           branch: main
           patchAll: true
+          fallbackTag: v0.0.0
 
       - name: Print next version
         run: echo "Next calculated version ${{ steps.semver.outputs.next }}"
