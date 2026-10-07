@@ -4,11 +4,13 @@
 # Gegenereerde bestanden
 static/tailwind.css
 node_modules/
+translations/**/*.mo
 
 # Database
 *.db
 *.sqlite
 *.sqlite3
+data/
 
 # Python
 __pycache__/

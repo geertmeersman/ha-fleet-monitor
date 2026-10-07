@@ -6,13 +6,10 @@ services:
     env_file:
       - .env
     volumes:
-      - ha_monitor_data:/data
+      - ./data:/data
     networks:
-      - internal
-
-volumes:
-  ha_monitor_data:
+      - proxy
 
 networks:
-  internal:
+  proxy:
     external: true

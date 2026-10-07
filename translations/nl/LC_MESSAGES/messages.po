@@ -1,0 +1,151 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "HA Fleet Monitor"
+msgstr "HA Fleet Monitor"
+
+msgid "Loading..."
+msgstr "Aan het laden..."
+
+msgid "Admin"
+msgstr "Beheer"
+
+msgid "Logout"
+msgstr "Uitloggen"
+
+msgid "Online"
+msgstr "Online"
+
+msgid "Offline"
+msgstr "Offline"
+
+msgid "Auth Error"
+msgstr "Auth Fout"
+
+msgid "updates available"
+msgstr "updates beschikbaar"
+
+msgid "Update all"
+msgstr "Alles updaten"
+
+msgid "Install"
+msgstr "Installeer"
+
+msgid "Up-to-date"
+msgstr "Up-to-date"
+
+msgid "Reboot required"
+msgstr "Herstart vereist"
+
+msgid "Restart now"
+msgstr "Nu herstarten"
+
+msgid "Restart"
+msgstr "Herstart"
+
+msgid "Version"
+msgstr "Versie"
+
+msgid "Last updated"
+msgstr "Laatst bijgewerkt"
+
+msgid "Managed"
+msgstr "Beheerd"
+
+msgid "Monitored"
+msgstr "Gemonitord"
+
+msgid "Add instance"
+msgstr "Instantie toevoegen"
+
+msgid "Edit instance"
+msgstr "Instantie bewerken"
+
+msgid "Save"
+msgstr "Opslaan"
+
+msgid "Cancel"
+msgstr "Annuleren"
+
+msgid "Delete"
+msgstr "Verwijderen"
+
+msgid "Edit"
+msgstr "Bewerken"
+
+msgid "No instances added yet."
+msgstr "Nog geen instanties toegevoegd."
+
+msgid "No email"
+msgstr "Geen e-mail"
+
+msgid "Weekly report is sent every Monday at 08:00."
+msgstr "Wekelijks rapport wordt elke maandag om 08:00 verstuurd."
+
+msgid "Send report now"
+msgstr "Rapport nu versturen"
+
+msgid "Sending..."
+msgstr "Versturen..."
+
+msgid "Sent"
+msgstr "Verstuurd"
+
+msgid "Email test mode active"
+msgstr "E-mail testmodus actief"
+
+msgid "All emails are sent to"
+msgstr "Alle mails worden verstuurd naar"
+
+msgid "instead of the configured address per instance."
+msgstr "i.p.v. het ingestelde adres per instantie."
+
+msgid "ID (e.g. home)"
+msgstr "ID (bijv. thuis)"
+
+msgid "Name (e.g. Home)"
+msgstr "Naam (bijv. Thuis)"
+
+msgid "URL (https://...)"
+msgstr "URL (https://...)"
+
+msgid "Long-lived token"
+msgstr "Long-lived token"
+
+msgid "Email address (optional)"
+msgstr "E-mailadres (optioneel)"
+
+msgid "Managed (self-managed)"
+msgstr "Beheerd (zelf beheerd)"
+
+msgid "Fill in all required fields."
+msgstr "Vul alle verplichte velden in."
+
+msgid "Delete instance"
+msgstr "Instantie verwijderen"
+
+msgid "Are you sure you want to delete"
+msgstr "Weet je zeker dat je wil verwijderen"
+
+msgid "Are you sure you want to restart this instance?"
+msgstr "Weet je zeker dat je deze instantie wil herstarten?"
+
+msgid "Restart sent"
+msgstr "Herstart verzonden"
+
+msgid "Failed"
+msgstr "Mislukt"
+
+msgid "Password"
+msgstr "Wachtwoord"
+
+msgid "Login"
+msgstr "Inloggen"
+
+msgid "Invalid password"
+msgstr "Ongeldig wachtwoord"
+
+msgid "Back to dashboard"
+msgstr "Terug naar dashboard"

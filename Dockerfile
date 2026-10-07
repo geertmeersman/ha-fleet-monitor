@@ -14,6 +14,8 @@ COPY . .
 
 RUN mkdir -p static && tailwindcss -i tailwind.css -o static/tailwind.css --minify --config tailwind.config.js
 
+RUN pybabel compile -d translations
+
 EXPOSE 5000
 
 CMD ["python", "app.py"]

@@ -1,15 +1,42 @@
 import os
 import smtplib
-import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from functools import wraps
-from flask import Flask, jsonify, render_template, request, session, redirect, url_for
+
+import requests
 from apscheduler.schedulers.background import BackgroundScheduler
-from db import init_db, get_instances, upsert_instance, delete_instance
+from flask import Flask, jsonify, redirect, render_template, request, session, url_for
+from flask_babel import Babel
+from flask_babel import gettext as _
+
+from db import delete_instance, get_instances, init_db, upsert_instance
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
+
+SUPPORTED_LANGS = ["en", "nl", "fr", "de", "es"]
+
+
+def get_locale():
+    return session.get("lang", "en")
+
+
+babel = Babel(app, locale_selector=get_locale)
+
+
+@app.context_processor
+def inject_year():
+    from datetime import datetime
+
+    version = "unknown"
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "VERSION")) as f:
+            version = f.read().strip()
+    except FileNotFoundError:
+        pass
+    return {"current_year": datetime.now().year, "app_version": version}
+
 
 def login_required(f):
     @wraps(f)
@@ -17,7 +44,9 @@ def login_required(f):
         if not session.get("authenticated"):
             return redirect(url_for("login"))
         return f(*args, **kwargs)
+
     return decorated
+
 
 def check_instance(instance):
     headers = {
@@ -33,7 +62,7 @@ def check_instance(instance):
         "status": "offline",
         "version": "Onbekend",
         "updates": [],
-        "reboot_required": False
+        "reboot_required": False,
     }
 
     try:
@@ -77,6 +106,7 @@ def check_instance(instance):
 
     return data
 
+
 def send_weekly_email():
     from datetime import datetime
 
@@ -108,11 +138,14 @@ def send_weekly_email():
         if test_mode:
             print(f"[TEST MODE] Email zou naar {email} gaan, wordt verstuurd naar {actual_recipient}", flush=True)
 
-        update_rows = "".join(f"""
+        update_rows = "".join(
+            f"""
             <tr>
-                <td style='padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e293b;font-size:13px'>{u['title']}</td>
-                <td style='padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px;font-family:monospace'>{u['latest']}</td>
-            </tr>""" for u in result["updates"])
+                <td style='padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e293b;font-size:13px'>{u["title"]}</td>
+                <td style='padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#64748b;font-size:13px;font-family:monospace'>{u["latest"]}</td>
+            </tr>"""
+            for u in result["updates"]
+        )
 
         reboot_banner = ""
         if result.get("reboot_required"):
@@ -124,9 +157,9 @@ def send_weekly_email():
                 <thead>
                     <tr style='background:#0ea5e9'>
                         <th colspan='2' style='padding:10px 12px;text-align:left;color:#fff;font-size:14px'>
-                            🏠 {inst['name']}
-                            <span style='font-weight:normal;font-size:12px;margin-left:8px;opacity:0.85'>v{result['version']}</span>
-                            <a href='{inst['url']}' style='float:right;color:#fff;font-size:11px;opacity:0.85'>{inst['url']}</a>
+                            🏠 {inst["name"]}
+                            <span style='font-weight:normal;font-size:12px;margin-left:8px;opacity:0.85'>v{result["version"]}</span>
+                            <a href='{inst["url"]}' style='float:right;color:#fff;font-size:11px;opacity:0.85'>{inst["url"]}</a>
                         </th>
                     </tr>
                     <tr style='background:#f8fafc'>
@@ -152,7 +185,7 @@ def send_weekly_email():
                             <p style='color:#94a3b8;font-size:12px;margin:6px 0 0'>Wekelijks updateoverzicht · {date_str}</p>
                         </td></tr>
                         <tr><td style='padding:28px 32px'>
-                            <p style='color:#475569;font-size:14px;margin:0 0 24px'>Er zijn updates beschikbaar voor {inst['name']}:</p>
+                            <p style='color:#475569;font-size:14px;margin:0 0 24px'>Er zijn updates beschikbaar voor {inst["name"]}:</p>
                             {instance_block}
                         </td></tr>
                         <tr><td style='background:#f8fafc;padding:16px 32px;border-top:1px solid #e2e8f0'>
@@ -184,7 +217,16 @@ def send_weekly_email():
         except Exception as e:
             print(f"Email mislukt naar {actual_recipient}: {e}", flush=True)
 
+
 # --- ROUTES ---
+
+
+@app.route("/api/set-lang/<lang>")
+def set_lang(lang):
+    if lang in SUPPORTED_LANGS:
+        session["lang"] = lang
+    return redirect(request.referrer or url_for("index"))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -192,36 +234,44 @@ def login():
         if request.form.get("password") == os.environ.get("APP_PASSWORD"):
             session["authenticated"] = True
             return redirect(url_for("index"))
-        return render_template("login.html", error="Ongeldig wachtwoord")
+        return render_template("login.html", error=_("Invalid password"))
     return render_template("login.html", error=None)
+
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect(url_for("login"))
 
+
 @app.route("/api/config")
 @login_required
 def api_config():
-    return jsonify({
-        "test_mode": os.environ.get("SMTP_TEST_MODE", "false").lower() == "true",
-        "test_recipient": os.environ.get("SMTP_TEST_RECIPIENT", "")
-    })
+    return jsonify(
+        {
+            "test_mode": os.environ.get("SMTP_TEST_MODE", "false").lower() == "true",
+            "test_recipient": os.environ.get("SMTP_TEST_RECIPIENT", ""),
+        }
+    )
+
 
 @app.route("/")
 @login_required
 def index():
     return render_template("index.html")
 
+
 @app.route("/admin")
 @login_required
 def admin():
     return render_template("admin.html")
 
+
 @app.route("/api/instances", methods=["GET"])
 @login_required
 def api_get_instances():
     return jsonify(get_instances())
+
 
 @app.route("/api/instances", methods=["POST"])
 @login_required
@@ -230,16 +280,19 @@ def api_upsert_instance():
     upsert_instance(b["id"], b["name"], b["url"], b["token"], b.get("email", ""), b.get("managed", False))
     return jsonify({"status": "ok"})
 
+
 @app.route("/api/instances/<instance_id>", methods=["DELETE"])
 @login_required
 def api_delete_instance(instance_id):
     delete_instance(instance_id)
     return jsonify({"status": "ok"})
 
+
 @app.route("/api/status")
 @login_required
 def status_api():
     return jsonify([check_instance(inst) for inst in get_instances()])
+
 
 @app.route("/api/restart", methods=["POST"])
 @login_required
@@ -252,6 +305,7 @@ def restart_api():
     res = requests.post(f"{inst['url']}/api/services/homeassistant/restart", headers=headers, json={}, timeout=10)
     return jsonify({"status": "ok" if res.status_code == 200 else "error", "code": res.status_code})
 
+
 @app.route("/api/update", methods=["POST"])
 @login_required
 def update_api():
@@ -260,14 +314,21 @@ def update_api():
     if not inst:
         return jsonify({"error": "Instantie niet gevonden"}), 404
     headers = {"Authorization": f"Bearer {inst['token']}", "Content-Type": "application/json"}
-    res = requests.post(f"{inst['url']}/api/services/update/install", headers=headers, json={"entity_id": body.get("entity_id")}, timeout=10)
+    res = requests.post(
+        f"{inst['url']}/api/services/update/install",
+        headers=headers,
+        json={"entity_id": body.get("entity_id")},
+        timeout=10,
+    )
     return jsonify({"status": "ok" if res.status_code == 200 else "error", "code": res.status_code})
+
 
 @app.route("/api/send-report", methods=["POST"])
 @login_required
 def api_send_report():
     send_weekly_email()
     return jsonify({"status": "ok"})
+
 
 if __name__ == "__main__":
     init_db()
