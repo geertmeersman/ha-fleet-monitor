@@ -283,15 +283,10 @@ def send_weekly_email():
 def set_lang(lang):
     if lang in SUPPORTED_LANGS:
         session["lang"] = lang
-    referrer = request.referrer
-    if referrer:
-        from urllib.parse import urlparse
-
-        normalized_referrer = referrer.replace("\\", "/")
-        parsed = urlparse(normalized_referrer)
-        if parsed.netloc or parsed.scheme:
-            referrer = None
-    return redirect(referrer or url_for("index"))
+    tab = request.args.get("tab")
+    if tab == "settings":
+        return redirect(url_for("admin_tab", tab="settings"))
+    return redirect(url_for("index"))
 
 
 @app.route("/setup", methods=["GET", "POST"])

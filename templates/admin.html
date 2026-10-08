@@ -82,7 +82,7 @@
                 <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">{{ icon('globe', 'w-4 h-4') }} {{ _('Language') }}</h2>
                 <div class="flex flex-wrap gap-2">
                     {% for lang, label in [('en','English'),('nl','Nederlands'),('fr','Français'),('de','Deutsch'),('es','Español')] %}
-                    <a href="/api/set-lang/{{ lang }}"
+                    <a href="/api/set-lang/{{ lang }}?tab=settings"
                         class="px-4 py-2 text-sm rounded border {{ 'bg-sky-600 border-sky-600 text-white font-semibold' if session.get('lang','en') == lang else 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-sky-500' }}">{{ label }}</a>
                     {% endfor %}
                 </div>
