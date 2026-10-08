@@ -132,6 +132,9 @@ msgstr "Weet je zeker dat je wil verwijderen"
 msgid "Are you sure you want to restart this instance?"
 msgstr "Weet je zeker dat je deze instantie wil herstarten?"
 
+msgid "Home Assistant will be briefly unavailable."
+msgstr "Home Assistant zal even onbeschikbaar zijn."
+
 msgid "Restart sent"
 msgstr "Herstart verzonden"
 

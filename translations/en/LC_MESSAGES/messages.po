@@ -132,6 +132,9 @@ msgstr "Are you sure you want to delete"
 msgid "Are you sure you want to restart this instance?"
 msgstr "Are you sure you want to restart this instance?"
 
+msgid "Home Assistant will be briefly unavailable."
+msgstr "Home Assistant will be briefly unavailable."
+
 msgid "Restart sent"
 msgstr "Restart sent"
 
