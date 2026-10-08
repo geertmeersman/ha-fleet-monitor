@@ -1,7 +1,16 @@
 import os
 import sqlite3
 
-DB_PATH = os.environ.get("DB_PATH", "/data/ha_monitor.db")
+DB_PATH = os.environ.get("DB_PATH", "/data/ha_fleet_monitor.db")
+
+
+def _migrate_db_filename():
+    old = os.path.join(os.path.dirname(DB_PATH), "ha_monitor.db")
+    if os.path.exists(old) and not os.path.exists(DB_PATH):
+        os.rename(old, DB_PATH)
+
+
+_migrate_db_filename()
 
 
 def get_db():

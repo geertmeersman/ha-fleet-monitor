@@ -32,7 +32,7 @@ Create a `docker-compose.yml`:
 
 ```yaml
 services:
-  ha-monitor:
+  ha-fleet-monitor:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
@@ -52,7 +52,7 @@ networks:
 
 ```yaml
 services:
-  ha-monitor:
+  ha-fleet-monitor:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
