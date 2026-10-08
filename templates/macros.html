@@ -22,8 +22,8 @@
 </script>
 {% endmacro %}
 
-{% macro footer() %}
+{% macro footer(app_version='') %}
 <footer class="mt-12 pt-4 border-t border-slate-800 text-center text-xs text-slate-600">
-    © {{ current_year }} <a href="https://github.com/geertmeersman/ha-fleet-monitor" class="hover:text-slate-400">HA Fleet Monitor v{{ app_version }}</a> — <a href="https://github.com/geertmeersman" class="hover:text-slate-400">Geert Meersman</a>
+    © {{ current_year }} <a href="https://github.com/geertmeersman/ha-fleet-monitor" class="hover:text-slate-400">HA Fleet Monitor {{ app_version }}</a> — <a href="https://github.com/geertmeersman" class="hover:text-slate-400">Geert Meersman</a>
 </footer>
 {% endmacro %}
