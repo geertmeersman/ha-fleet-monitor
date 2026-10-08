@@ -38,3 +38,12 @@ repos:
       - id: conventional-pre-commit
         stages: [commit-msg]
         args: [feat, fix, docs, style, refactor, test, chore, ci, build]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: /volumes/git/setup/docker-build/ha-monitor/.venv/bin/python -m pytest tests/ -q
+        language: system
+        pass_filenames: false
+        stages: [pre-push]

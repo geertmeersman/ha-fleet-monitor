@@ -1,5 +1,56 @@
 import json
 
+# --- Setup ---
+
+
+def test_setup_redirects_to_login_when_already_configured(client):
+    # app fixture already sets password_hash, so /setup should redirect
+    res = client.get("/setup")
+    assert res.status_code == 302
+    assert "/login" in res.headers["Location"]
+
+
+def test_setup_get_when_no_password_set(app, client):
+    import db
+
+    db.delete_setting("password_hash")
+    res = client.get("/setup")
+    assert res.status_code == 200
+    assert b"setup" in res.data.lower() or res.status_code == 200
+
+
+def test_setup_post_missing_fields(app, client):
+    import db
+
+    db.delete_setting("password_hash")
+    res = client.post("/setup", data=json.dumps({"email": "", "password": ""}), content_type="application/json")
+    assert res.status_code == 400
+
+
+def test_setup_post_creates_account(app, client):
+    import db
+
+    db.delete_setting("password_hash")
+    res = client.post(
+        "/setup",
+        data=json.dumps({"email": "admin@example.com", "password": "newpass123"}),
+        content_type="application/json",
+    )
+    assert res.status_code == 200
+    assert res.get_json()["status"] == "ok"
+    assert db.get_setting("password_hash") is not None
+    assert db.get_setting("admin_email") == "admin@example.com"
+
+
+def test_redirect_to_setup_when_no_password_set(app, client):
+    import db
+
+    db.delete_setting("password_hash")
+    res = client.get("/login")
+    assert res.status_code == 302
+    assert "/setup" in res.headers["Location"]
+
+
 # --- Auth ---
 
 

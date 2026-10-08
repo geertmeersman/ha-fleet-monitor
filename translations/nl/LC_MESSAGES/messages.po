@@ -12,6 +12,12 @@ msgstr "Aan het laden..."
 msgid "Admin"
 msgstr "Beheer"
 
+msgid "Instances"
+msgstr "Instanties"
+
+msgid "Settings"
+msgstr "Instellingen"
+
 msgid "Logout"
 msgstr "Uitloggen"
 
@@ -177,6 +183,129 @@ msgstr "Ongeldig wachtwoord"
 msgid "Back to dashboard"
 msgstr "Terug naar dashboard"
 
+msgid "Setup"
+msgstr "Instellen"
+
+msgid "Welcome! Create your admin account to get started."
+msgstr "Welkom! Maak je admin account aan om te beginnen."
+
+msgid "Create account"
+msgstr "Account aanmaken"
+
+msgid "Email"
+msgstr "E-mail"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "New password (leave blank to keep current)"
+msgstr "Nieuw wachtwoord (leeg laten om huidig te behouden)"
+
+msgid "Forgot password?"
+msgstr "Wachtwoord vergeten?"
+
+msgid "Forgot password"
+msgstr "Wachtwoord vergeten"
+
+msgid "Send reset link"
+msgstr "Reset link versturen"
+
+msgid "A reset link will be sent to your admin email address."
+msgstr "Een reset link wordt verstuurd naar je admin e-mailadres."
+
+msgid "Reset link sent to your admin email."
+msgstr "Reset link verstuurd naar je admin e-mail."
+
+msgid "No admin email configured."
+msgstr "Geen admin e-mail geconfigureerd."
+
+msgid "Failed to send email. Check SMTP settings."
+msgstr "E-mail versturen mislukt. Controleer de SMTP instellingen."
+
+msgid "Back to login"
+msgstr "Terug naar login"
+
+msgid "Test"
+msgstr "Testen"
+
+msgid "Test email sent successfully."
+msgstr "Testmail succesvol verstuurd."
+
+msgid "Report schedule"
+msgstr "Rapportplanning"
+
+msgid "Day"
+msgstr "Dag"
+
+msgid "Hour"
+msgstr "Uur"
+
+msgid "Monday"
+msgstr "Maandag"
+
+msgid "Tuesday"
+msgstr "Dinsdag"
+
+msgid "Wednesday"
+msgstr "Woensdag"
+
+msgid "Thursday"
+msgstr "Donderdag"
+
+msgid "Friday"
+msgstr "Vrijdag"
+
+msgid "Saturday"
+msgstr "Zaterdag"
+
+msgid "Sunday"
+msgstr "Zondag"
+
+msgid "Send"
+msgstr "Versturen"
+
+msgid "This will send the report to"
+msgstr "Dit stuurt het rapport naar"
+
+msgid "Test mode active"
+msgstr "Testmodus actief"
+
+msgid "No recipients configured."
+msgstr "Geen ontvangers geconfigureerd."
+
+msgid "SMTP configured"
+msgstr "SMTP geconfigureerd"
+
+msgid "SMTP not configured"
+msgstr "SMTP niet geconfigureerd"
+
+msgid "Next"
+msgstr "Volgende"
+
+msgid "Reset password"
+msgstr "Wachtwoord resetten"
+
+msgid "New password"
+msgstr "Nieuw wachtwoord"
+
+msgid "Current password (required to change password)"
+msgstr "Huidig wachtwoord (vereist om wachtwoord te wijzigen)"
+
+msgid "Confirm new password"
+msgstr "Nieuw wachtwoord bevestigen"
+
+msgid "Current password is required to change password."
+msgstr "Huidig wachtwoord is vereist om het wachtwoord te wijzigen."
+
+msgid "Passwords do not match."
+msgstr "Wachtwoorden komen niet overeen."
+
+msgid "Current password is incorrect."
+msgstr "Huidig wachtwoord is onjuist."
+
+msgid "No email set — password reset via email will not work."
+msgstr "Geen e-mail ingesteld — wachtwoord reset via e-mail zal niet werken."
+
 msgid "Two-factor authentication"
 msgstr "Twee-factor authenticatie"
 
@@ -224,3 +353,54 @@ msgstr "Verifiëren"
 
 msgid "Back"
 msgstr "Terug"
+
+msgid "SMTP configured"
+msgstr "SMTP geconfigureerd"
+
+msgid "SMTP not configured"
+msgstr "SMTP niet geconfigureerd"
+
+msgid "SMTP Host"
+msgstr "SMTP Host"
+
+msgid "SMTP Port"
+msgstr "SMTP Poort"
+
+msgid "SMTP Username"
+msgstr "SMTP Gebruikersnaam"
+
+msgid "SMTP Password (leave blank to keep current)"
+msgstr "SMTP Wachtwoord (leeg laten om huidig te behouden)"
+
+msgid "From address"
+msgstr "Afzenderadres"
+
+msgid "Test mode"
+msgstr "Testmodus"
+
+msgid "Test recipient"
+msgstr "Testontvangers"
+
+msgid "Save & continue"
+msgstr "Opslaan & doorgaan"
+
+msgid "Skip"
+msgstr "Overslaan"
+
+msgid "Configure SMTP to enable email reports and password reset."
+msgstr "Configureer SMTP om e-mailrapporten en wachtwoordreset in te schakelen."
+
+msgid "Without SMTP, password reset via email will not work."
+msgstr "Zonder SMTP werkt wachtwoordreset via e-mail niet."
+
+msgid "Instance saved."
+msgstr "Instantie opgeslagen."
+
+msgid "Account saved."
+msgstr "Account opgeslagen."
+
+msgid "SMTP saved."
+msgstr "SMTP opgeslagen."
+
+msgid "Schedule saved."
+msgstr "Planning opgeslagen."

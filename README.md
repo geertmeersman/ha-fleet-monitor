@@ -41,14 +41,20 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 ## Features
 
 - 📊 **Dashboard** — Overview of all HA instances with status, version and available updates
-- 📦 **Update management** — Install individual updates or all updates at once per instance
-- 🔄 **Restart** — Restart any HA instance directly from the dashboard
+- 🔧 **Managed / Monitored** — Split instances into managed (full control) and monitored (read-only)
+- 📦 **Update management** — Install individual updates or all updates at once, sequentially per instance
+- 🔄 **Restart** — Restart any managed HA instance directly from the dashboard
 - ⚠️ **Reboot required** — Visual indicator when a restart is required
 - 🛠️ **Admin panel** — Add, edit and remove instances via a web UI (stored in SQLite)
 - 📧 **Weekly email report** — Automatic email every Monday at 08:00 with pending updates per instance
 - 🧪 **Test mode** — Redirect all emails to a test recipient without affecting production
-- 🔐 **Authentication** — Password protected via `.env`
+- 🔐 **Authentication** — Admin account setup on first run, password stored as hash in the database
+- 🔑 **Two-factor authentication** — TOTP-based 2FA via any authenticator app
+- 🔁 **Password reset** — Reset password via email link
+- 💾 **Export / Import** — Export and import instance configuration as JSON
 - 🔔 **Attention favicon** — Favicon blinks when updates or a reboot is required
+- 🌗 **Light / Dark theme** — Theme toggle with system preference detection
+- 🌐 **Multilingual** — EN / NL / FR / DE / ES
 
 ## Stack
 
@@ -70,8 +76,6 @@ services:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ./data:/data
     networks:
@@ -82,13 +86,15 @@ networks:
     external: true
 ```
 
-Create a `.env` file (see `.env.example` for all options) and start:
+Start:
 
 ```bash
 docker compose up -d
 ```
 
 The dashboard is available at the configured proxy URL, or add `ports: - "5000:5000"` to the compose file for direct access.
+
+On first run you will be redirected to `/setup` to create your admin account.
 
 ### Building from source
 
@@ -99,15 +105,7 @@ git clone <your-repo-url>
 cd ha-fleet-monitor
 ```
 
-### 2. Configure environment variables
-
-```bash
-cp .env.example .env
-```
-
-Fill in your credentials — see `.env.example` for all available options.
-
-### 3. Build and start
+### 2. Build and start
 
 ```bash
 docker compose up -d --build
@@ -117,7 +115,7 @@ The dashboard is available at the configured proxy URL, or at `http://localhost:
 
 ### 4. Add your HA instances
 
-Go to `http://localhost:5000/admin` and add your Home Assistant instances. You'll need a long-lived access token from each HA instance: **Profile → Security → Long-Lived Access Tokens**.
+On first run, go to `http://localhost:5000` — you will be redirected to the setup page to create your admin account (email + password). After that, go to `http://localhost:5000/admin` to add your Home Assistant instances. You'll need a long-lived access token from each HA instance: **Profile → Security → Long-Lived Access Tokens**.
 
 ## Supported HA Setups
 

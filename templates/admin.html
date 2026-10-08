@@ -1,4 +1,4 @@
-{% from 'macros.html' import lang_switcher, theme_toggle, footer %}
+{% from 'macros.html' import lang_switcher, theme_toggle, toast, icon, footer %}
 <!DOCTYPE html>
 <html lang="{{ session.get('lang', 'en') }}" class="dark">
 <head>
@@ -15,95 +15,228 @@
                 <img src="/static/ha-favicon.png" class="w-7 h-7 inline"> {{ _('Admin') }}
             </h1>
             <div class="flex items-center gap-4">
-                <a href="/" class="text-xs text-sky-500 dark:text-sky-400 hover:underline">← {{ _('Back to dashboard') }}</a>
-                {{ lang_switcher() }}
+                <a href="/" class="text-xs text-sky-500 dark:text-sky-400 hover:underline flex items-center gap-1">{{ icon('arrow-left', 'w-3 h-3') }} {{ _('Back to dashboard') }}</a>
                 {{ theme_toggle() }}
-                <a href="/logout" class="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">{{ _('Logout') }}</a>
+                <a href="/logout" class="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">{{ icon('logout', 'w-3.5 h-3.5') }} {{ _('Logout') }}</a>
             </div>
         </header>
 
         <div id="test-mode-banner" class="hidden mb-6 flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
-            <span class="text-amber-500 text-lg">⚠️</span>
+            <span class="text-amber-500">{{ icon('warning', 'w-5 h-5') }}</span>
             <div>
                 <p class="text-sm font-semibold text-amber-500 dark:text-amber-400">{{ _('Email test mode active') }}</p>
                 <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('All emails are sent to') }} <span id="test-recipient" class="text-amber-600 dark:text-amber-300 font-mono"></span> {{ _('instead of the configured address per instance.') }}</p>
             </div>
         </div>
 
-        <!-- Instance form -->
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
-            <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
-            <div class="grid grid-cols-1 gap-3">
-                <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-name"  type="text"     placeholder="{{ _('Name (e.g. Home)') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-url"   type="text"     placeholder="{{ _('URL (https://...)') }}"        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-token" type="password" placeholder="{{ _('Long-lived token') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-email" type="email"    placeholder="{{ _('Email address (optional)') }}" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 mt-1">
-                    <input id="f-managed" type="checkbox" class="accent-sky-500"> {{ _('Managed (self-managed)') }}
-                </label>
-            </div>
-            <div class="flex gap-2 mt-4">
-                <button onclick="saveInstance()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
-                <button onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
-            </div>
+        <!-- Tabs -->
+        <div class="flex gap-1 mb-6 bg-slate-200 dark:bg-slate-800 rounded-lg p-1">
+            <button id="tab-instances" onclick="switchTab('instances')"
+                class="flex-1 py-2 text-sm font-semibold rounded-md transition-colors bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm flex items-center justify-center gap-2">
+                {{ icon('home', 'w-4 h-4') }} {{ _('Instances') }}
+            </button>
+            <button id="tab-settings" onclick="switchTab('settings')"
+                class="flex-1 py-2 text-sm font-semibold rounded-md transition-colors text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 flex items-center justify-center gap-2">
+                {{ icon('settings', 'w-4 h-4') }} {{ _('Settings') }}
+            </button>
         </div>
 
-        <!-- Instances list -->
-        <div id="instances-list" class="space-y-3 mb-6"></div>
-
-        <!-- Email report -->
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
-            <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
-            <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 {{ _('Send report now') }}</button>
-        </div>
-
-        <!-- 2FA -->
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">🔐 {{ _('Two-factor authentication') }}</p>
-                    <p class="text-xs mt-0.5" id="2fa-status-text"></p>
-                </div>
-                <div id="2fa-actions"></div>
-            </div>
-            <div id="2fa-setup" class="hidden mt-4 space-y-4">
-                <div class="flex gap-6 items-start">
-                    <div id="2fa-qr" class="bg-white p-3 rounded-lg shrink-0"></div>
-                    <div class="space-y-2">
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Scan the QR code with your authenticator app, then enter the code to confirm.') }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Or enter this key manually:') }}</p>
-                        <code id="2fa-secret" class="block text-xs font-mono bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-all" onclick="copySecret(this)" title="{{ _('Click to copy') }}"></code>
-                        <p id="2fa-copied" class="text-xs text-emerald-500 hidden">{{ _('Copied!') }}</p>
+        <!-- Tab: Instances -->
+        <div id="panel-instances">
+            <!-- Instance form -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
+                <form onsubmit="saveInstance(event)" class="grid grid-cols-1 gap-3">
+                    <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="f-name"  type="text"     placeholder="{{ _('Name (e.g. Home)') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="f-url"   type="text"     placeholder="{{ _('URL (https://...)') }}"        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="f-token" type="password" placeholder="{{ _('Long-lived token') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="f-email" type="email"    placeholder="{{ _('Email address (optional)') }}" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 mt-1">
+                        <input id="f-managed" type="checkbox" class="accent-sky-500"> {{ _('Managed (self-managed)') }}
+                    </label>
+                    <div class="flex gap-2 mt-1">
+                        <button type="submit" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
+                        <button type="button" onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
                     </div>
+                </form>
+            </div>
+
+            <!-- Instances list -->
+            <div id="instances-list" class="space-y-3 mb-6"></div>
+
+            <!-- Export / Import -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
+                <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
+                <div class="flex gap-2">
+                    <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 flex items-center gap-2">{{ icon('download', 'w-4 h-4') }} {{ _('Export') }}</button>
+                    <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300 flex items-center gap-2">{{ icon('upload', 'w-4 h-4') }} {{ _('Import') }}</button>
                 </div>
-                <div class="flex gap-2 items-center">
-                    <input id="2fa-code" type="text" inputmode="numeric" maxlength="6" placeholder="{{ _('6-digit code') }}"
-                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 w-36 tracking-widest text-center focus:outline-none focus:border-sky-500">
-                    <button onclick="confirm2fa()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Confirm') }}</button>
-                    <button onclick="cancel2fa()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
-                </div>
-                <p id="2fa-error" class="text-xs text-rose-500 hidden"></p>
             </div>
         </div>
 
-        <!-- Export / Import -->
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
-            <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
-            <div class="flex gap-2">
-                <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬇️ {{ _('Export') }}</button>
-                <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬆️ {{ _('Import') }}</button>
+        <!-- Tab: Settings -->
+        <div id="panel-settings" class="hidden">
+            <!-- Language -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">{{ icon('globe', 'w-4 h-4') }} {{ _('Language') }}</h2>
+                <div class="flex flex-wrap gap-2">
+                    {% for lang, label in [('en','English'),('nl','Nederlands'),('fr','Français'),('de','Deutsch'),('es','Español')] %}
+                    <a href="/api/set-lang/{{ lang }}"
+                        class="px-4 py-2 text-sm rounded border {{ 'bg-sky-600 border-sky-600 text-white font-semibold' if session.get('lang','en') == lang else 'bg-slate-100 dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-sky-500' }}">{{ label }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- 2FA -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">{{ icon('lock', 'w-4 h-4') }} {{ _('Two-factor authentication') }}</p>
+                        <p class="text-xs mt-0.5" id="2fa-status-text"></p>
+                    </div>
+                    <div id="2fa-actions"></div>
+                </div>
+                <div id="2fa-setup" class="hidden mt-4 space-y-4">
+                    <div class="flex gap-6 items-start">
+                        <div id="2fa-qr" class="bg-white p-3 rounded-lg shrink-0"></div>
+                        <div class="space-y-2">
+                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Scan the QR code with your authenticator app, then enter the code to confirm.') }}</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Or enter this key manually:') }}</p>
+                            <code id="2fa-secret" class="block text-xs font-mono bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-all" onclick="copySecret(this)" title="{{ _('Click to copy') }}"></code>
+                            <p id="2fa-copied" class="text-xs text-emerald-500 hidden">{{ _('Copied!') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 items-center">
+                        <input id="2fa-code" type="text" inputmode="numeric" maxlength="6" placeholder="{{ _('6-digit code') }}"
+                            class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 w-36 tracking-widest text-center focus:outline-none focus:border-sky-500">
+                        <button onclick="confirm2fa()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Confirm') }}</button>
+                        <button onclick="cancel2fa()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
+                    </div>
+                    <p id="2fa-error" class="text-xs text-rose-500 hidden"></p>
+                </div>
+            </div>
+
+            <!-- Account -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">{{ icon('user', 'w-4 h-4') }} {{ _('Account') }}</h2>
+                <form onsubmit="saveAccount(event)" class="grid grid-cols-1 gap-3">
+                    <input id="a-email" type="email" placeholder="{{ _('Email') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <p id="a-no-email-warning" class="hidden text-xs text-amber-500 flex items-center gap-1">{{ icon('warning', 'w-3.5 h-3.5') }} {{ _('No email set — password reset via email will not work.') }}</p>
+                    <hr class="border-slate-200 dark:border-slate-700 my-1">
+                    <input id="a-current-password" type="password" placeholder="{{ _('Current password (required to change password)') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="a-password" type="password" placeholder="{{ _('New password (leave blank to keep current)') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="a-password-confirm" type="password" placeholder="{{ _('Confirm new password') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <p id="a-password-error" class="hidden text-xs text-rose-500"></p>
+                    <div class="flex gap-2 mt-1">
+                        <button type="submit" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Schedule -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4 flex items-center gap-2">{{ icon('calendar', 'w-4 h-4') }} {{ _('Report schedule') }}</h2>
+                <form onsubmit="saveSchedule(event)" class="flex gap-3 items-end">
+                    <div class="flex-1">
+                        <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Day') }}</label>
+                        <select id="sched-day" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500">
+                            <option value="mon">{{ _('Monday') }}</option>
+                            <option value="tue">{{ _('Tuesday') }}</option>
+                            <option value="wed">{{ _('Wednesday') }}</option>
+                            <option value="thu">{{ _('Thursday') }}</option>
+                            <option value="fri">{{ _('Friday') }}</option>
+                            <option value="sat">{{ _('Saturday') }}</option>
+                            <option value="sun">{{ _('Sunday') }}</option>
+                        </select>
+                    </div>
+                    <div class="w-24">
+                        <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Hour') }}</label>
+                        <input id="sched-hour" type="number" min="0" max="23"
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-sky-500">
+                    </div>
+                    <button type="submit" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
+                </form>
+            </div>
+
+            <!-- Email report -->
+            <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-2">{{ icon('mail', 'w-4 h-4') }} {{ _('Email / SMTP') }}</p>
+                        <p class="text-xs mt-0.5 text-slate-400 dark:text-slate-500" id="smtp-status-text"></p>
+                    </div>
+                    <button onclick="confirmSendReport()" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white flex items-center gap-2">{{ icon('mail', 'w-4 h-4') }} {{ _('Send report now') }}</button>
+                </div>
+                <form onsubmit="saveSmtp(event)" class="grid grid-cols-1 gap-3">
+                    <input id="smtp-host" type="text" placeholder="{{ _('SMTP Host') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="smtp-port" type="number" placeholder="{{ _('SMTP Port') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="smtp-user" type="email" placeholder="{{ _('SMTP Username') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="smtp-pass" type="password" placeholder="{{ _('SMTP Password (leave blank to keep current)') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <input id="smtp-from" type="text" placeholder="{{ _('From address') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <input id="smtp-test-mode" type="checkbox" class="accent-sky-500"> {{ _('Test mode') }}
+                    </label>
+                    <input id="smtp-test-recipient" type="email" placeholder="{{ _('Test recipient') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                    <div class="flex gap-2 mt-1">
+                        <button type="submit" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
+                        <button type="button" onclick="testSmtp(this)" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Test') }}</button>
+                    </div>
+                    <p id="smtp-test-result" class="hidden text-xs mt-1"></p>
+                </form>
             </div>
         </div>
 
+        {{ toast() }}
         {{ footer(app_version) }}
+    </div>
+
+    <!-- Disable 2FA modal -->
+    <div id="disable-2fa-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div class="flex items-center gap-3 mb-4">
+                {{ icon('lock', 'w-6 h-6 text-rose-500') }}
+                <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100">{{ _('Disable 2FA') }}</h2>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">{{ _('Are you sure you want to disable 2FA?') }}</p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeDisable2faModal()" class="px-4 py-2 text-sm rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
+                <button onclick="confirmDisable2fa()" class="px-4 py-2 text-sm rounded bg-rose-700 hover:bg-rose-600 text-white">{{ _('Disable 2FA') }}</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send report modal -->
+    <div id="report-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div class="flex items-center gap-3 mb-4">
+                {{ icon('mail', 'w-6 h-6 text-emerald-500') }}
+                <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100">{{ _('Send report now') }}</h2>
+            </div>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">{{ _('This will send the report to') }}:</p>
+            <p class="text-sm font-mono text-slate-700 dark:text-slate-200 mb-6" id="report-modal-body"></p>
+            <div class="flex justify-end gap-3">
+                <button onclick="closeReportModal()" class="px-4 py-2 text-sm rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
+                <button id="report-modal-confirm" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">{{ _('Send') }}</button>
+            </div>
+        </div>
     </div>
 
     <!-- Import modal -->
     <div id="import-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
             <div class="flex items-center gap-3 mb-4">
-                <span class="text-2xl">⬆️</span>
+                {{ icon('upload', 'w-6 h-6 text-sky-500') }}
                 <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100">{{ _('Import') }}</h2>
             </div>
             <div id="import-dropzone"
@@ -149,6 +282,21 @@
             twofa_invalid_code: "{{ _('Invalid code') }}",
         };
 
+        function switchTab(tab) {
+            const isInstances = tab === 'instances';
+            document.getElementById('panel-instances').classList.toggle('hidden', !isInstances);
+            document.getElementById('panel-settings').classList.toggle('hidden', isInstances);
+            const base = 'flex-1 py-2 text-sm font-semibold rounded-md transition-colors flex items-center justify-center gap-2';
+            const active = 'bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 shadow-sm';
+            const inactive = 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200';
+            document.getElementById('tab-instances').className = `${base} ${isInstances ? active : inactive}`;
+            document.getElementById('tab-settings').className = `${base} ${!isInstances ? active : inactive}`;
+            history.replaceState(null, '', '/admin/' + tab);
+        }
+
+        const initialTab = location.pathname.endsWith('/settings') ? 'settings' : 'instances';
+        switchTab(initialTab);
+
         async function loadInstances() {
             const res = await fetch('/api/instances');
             const instances = await res.json();
@@ -189,7 +337,8 @@
             document.getElementById('form-title').textContent = T.addInstance;
         }
 
-        async function saveInstance() {
+        async function saveInstance(event) {
+            event.preventDefault();
             const body = {
                 id:      document.getElementById('f-id').value.trim(),
                 name:    document.getElementById('f-name').value.trim(),
@@ -202,6 +351,7 @@
             await fetch('/api/instances', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(body) });
             resetForm();
             loadInstances();
+            showToast("{{ _('Instance saved.') }}");
         }
 
         async function deleteInstance(id) {
@@ -215,7 +365,30 @@
             btn.textContent = T.sending;
             await fetch('/api/send-report', { method: 'POST' });
             btn.textContent = '✓ ' + T.sent;
+            btn.disabled = false;
         }
+
+        function confirmSendReport() {
+            fetch('/api/send-report/preview').then(r => r.json()).then(data => {
+                let body = "{{ _('This will send the report to') }}:\n";
+                if (data.test_mode) body = "⚠️ {{ _('Test mode active') }} — {{ _('This will send the report to') }}:\n";
+                const list = data.recipients.length ? data.recipients.join(', ') : "{{ _('No recipients configured.') }}";
+                document.getElementById('report-modal-body').textContent = list;
+                document.getElementById('report-modal').classList.remove('hidden');
+                document.getElementById('report-modal-confirm').onclick = async () => {
+                    closeReportModal();
+                    await fetch('/api/send-report', { method: 'POST' });
+                };
+            });
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+        }
+
+        document.getElementById('report-modal').addEventListener('click', e => {
+            if (e.target === document.getElementById('report-modal')) closeReportModal();
+        });
 
         // 2FA
         async function load2faStatus() {
@@ -268,10 +441,22 @@
         }
 
         async function disable2fa() {
-            if (!confirm(T.twofa_disable_confirm)) return;
+            document.getElementById('disable-2fa-modal').classList.remove('hidden');
+        }
+
+        function closeDisable2faModal() {
+            document.getElementById('disable-2fa-modal').classList.add('hidden');
+        }
+
+        async function confirmDisable2fa() {
+            closeDisable2faModal();
             await fetch('/api/2fa/disable', {method: 'POST'});
             load2faStatus();
         }
+
+        document.getElementById('disable-2fa-modal').addEventListener('click', e => {
+            if (e.target === document.getElementById('disable-2fa-modal')) closeDisable2faModal();
+        });
 
         function copySecret(el) {
             navigator.clipboard.writeText(el.textContent);
@@ -346,6 +531,124 @@
             a.href = URL.createObjectURL(blob);
             a.download = 'ha-fleet-monitor-config.json';
             a.click();
+        }
+
+        // Account
+        fetch('/api/account').then(r => r.json()).then(data => {
+            document.getElementById('a-email').value = data.email || '';
+            if (!data.email) document.getElementById('a-no-email-warning').classList.remove('hidden');
+        });
+
+        async function saveAccount(event) {
+            event.preventDefault();
+            const email = document.getElementById('a-email').value.trim();
+            const currentPassword = document.getElementById('a-current-password').value;
+            const newPassword = document.getElementById('a-password').value;
+            const confirmPassword = document.getElementById('a-password-confirm').value;
+            const errorEl = document.getElementById('a-password-error');
+            errorEl.classList.add('hidden');
+
+            if (!email) return alert(T.fillRequired);
+
+            if (newPassword) {
+                if (!currentPassword) {
+                    errorEl.textContent = "{{ _('Current password is required to change password.') }}";
+                    return errorEl.classList.remove('hidden');
+                }
+                if (newPassword !== confirmPassword) {
+                    errorEl.textContent = "{{ _('Passwords do not match.') }}";
+                    return errorEl.classList.remove('hidden');
+                }
+            }
+
+            const res = await fetch('/api/account', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ email, current_password: currentPassword || null, password: newPassword || null })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                errorEl.textContent = data.error;
+                errorEl.classList.remove('hidden');
+                showToast(data.error, 'error');
+                return;
+            }
+            document.getElementById('a-current-password').value = '';
+            document.getElementById('a-password').value = '';
+            document.getElementById('a-password-confirm').value = '';
+            document.getElementById('a-no-email-warning').classList.toggle('hidden', !!email);
+            showToast("{{ _('Account saved.') }}");
+        }
+
+        async function testSmtp(btn) {
+            btn.disabled = true;
+            btn.textContent = '...';
+            const res = await fetch('/api/smtp/test', {method: 'POST'});
+            const data = await res.json();
+            const el = document.getElementById('smtp-test-result');
+            el.classList.remove('hidden');
+            if (res.ok) {
+                el.textContent = '✓ ' + "{{ _('Test email sent successfully.') }}";
+                el.className = 'text-xs mt-1 text-emerald-500';
+            } else {
+                el.textContent = '✗ ' + data.error;
+                el.className = 'text-xs mt-1 text-rose-500';
+            }
+            btn.disabled = false;
+            btn.textContent = "{{ _('Test') }}";
+        }
+
+        // Schedule
+        fetch('/api/schedule').then(r => r.json()).then(cfg => {
+            document.getElementById('sched-day').value = cfg.day;
+            document.getElementById('sched-hour').value = cfg.hour;
+        });
+
+        async function saveSchedule(event) {
+            event.preventDefault();
+            await fetch('/api/schedule', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    day: document.getElementById('sched-day').value,
+                    hour: parseInt(document.getElementById('sched-hour').value),
+                })
+            });
+            showToast("{{ _('Schedule saved.') }}");
+        }
+
+        // SMTP
+        fetch('/api/smtp').then(r => r.json()).then(cfg => {
+            document.getElementById('smtp-host').value = cfg.host;
+            document.getElementById('smtp-port').value = cfg.port;
+            document.getElementById('smtp-user').value = cfg.user;
+            document.getElementById('smtp-from').value = cfg.from;
+            document.getElementById('smtp-test-mode').checked = cfg.test_mode;
+            document.getElementById('smtp-test-recipient').value = cfg.test_recipient;
+            const status = document.getElementById('smtp-status-text');
+            status.textContent = cfg.configured ? "{{ _('SMTP configured') }}" : "{{ _('SMTP not configured') }}";
+            status.className = `text-xs mt-0.5 ${cfg.configured ? 'text-emerald-500 dark:text-emerald-400' : 'text-amber-500'}`;
+        });
+
+        async function saveSmtp(event) {
+            event.preventDefault();
+            const body = {
+                host: document.getElementById('smtp-host').value.trim(),
+                port: parseInt(document.getElementById('smtp-port').value) || 587,
+                user: document.getElementById('smtp-user').value.trim(),
+                password: document.getElementById('smtp-pass').value || null,
+                from: document.getElementById('smtp-from').value.trim(),
+                test_mode: document.getElementById('smtp-test-mode').checked,
+                test_recipient: document.getElementById('smtp-test-recipient').value.trim(),
+            };
+            await fetch('/api/smtp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+            document.getElementById('smtp-pass').value = '';
+            fetch('/api/smtp').then(r => r.json()).then(cfg => {
+                const status = document.getElementById('smtp-status-text');
+                status.textContent = cfg.configured ? "{{ _('SMTP configured') }}" : "{{ _('SMTP not configured') }}";
+                status.className = `text-xs mt-0.5 ${cfg.configured ? 'text-emerald-500 dark:text-emerald-400' : 'text-amber-500'}`;
+            });
+            showToast("{{ _('SMTP saved.') }}");
         }
 
         loadInstances();

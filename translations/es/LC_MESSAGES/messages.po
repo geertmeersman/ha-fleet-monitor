@@ -12,6 +12,12 @@ msgstr "Cargando..."
 msgid "Admin"
 msgstr "Administración"
 
+msgid "Instances"
+msgstr "Instancias"
+
+msgid "Settings"
+msgstr "Configuración"
+
 msgid "Logout"
 msgstr "Cerrar sesión"
 
@@ -177,6 +183,129 @@ msgstr "Contraseña inválida"
 msgid "Back to dashboard"
 msgstr "Volver al panel"
 
+msgid "Setup"
+msgstr "Configuración"
+
+msgid "Welcome! Create your admin account to get started."
+msgstr "¡Bienvenido! Cree su cuenta de administrador para comenzar."
+
+msgid "Create account"
+msgstr "Crear cuenta"
+
+msgid "Email"
+msgstr "Correo electrónico"
+
+msgid "Account"
+msgstr "Cuenta"
+
+msgid "New password (leave blank to keep current)"
+msgstr "Nueva contraseña (dejar en blanco para mantener la actual)"
+
+msgid "Forgot password?"
+msgstr "¿Olvidó su contraseña?"
+
+msgid "Forgot password"
+msgstr "Contraseña olvidada"
+
+msgid "Send reset link"
+msgstr "Enviar enlace de restablecimiento"
+
+msgid "A reset link will be sent to your admin email address."
+msgstr "Se enviará un enlace de restablecimiento a su dirección de correo electrónico de administrador."
+
+msgid "Reset link sent to your admin email."
+msgstr "Enlace de restablecimiento enviado a su correo electrónico de administrador."
+
+msgid "No admin email configured."
+msgstr "No hay correo electrónico de administrador configurado."
+
+msgid "Failed to send email. Check SMTP settings."
+msgstr "Error al enviar el correo electrónico. Verifique la configuración SMTP."
+
+msgid "Back to login"
+msgstr "Volver al inicio de sesión"
+
+msgid "Test"
+msgstr "Probar"
+
+msgid "Test email sent successfully."
+msgstr "Correo de prueba enviado correctamente."
+
+msgid "Report schedule"
+msgstr "Programación del informe"
+
+msgid "Day"
+msgstr "Día"
+
+msgid "Hour"
+msgstr "Hora"
+
+msgid "Monday"
+msgstr "Lunes"
+
+msgid "Tuesday"
+msgstr "Martes"
+
+msgid "Wednesday"
+msgstr "Miércoles"
+
+msgid "Thursday"
+msgstr "Jueves"
+
+msgid "Friday"
+msgstr "Viernes"
+
+msgid "Saturday"
+msgstr "Sábado"
+
+msgid "Sunday"
+msgstr "Domingo"
+
+msgid "Send"
+msgstr "Enviar"
+
+msgid "This will send the report to"
+msgstr "Esto enviará el informe a"
+
+msgid "Test mode active"
+msgstr "Modo de prueba activo"
+
+msgid "No recipients configured."
+msgstr "No hay destinatarios configurados."
+
+msgid "SMTP configured"
+msgstr "SMTP configurado"
+
+msgid "SMTP not configured"
+msgstr "SMTP no configurado"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Reset password"
+msgstr "Restablecer contraseña"
+
+msgid "New password"
+msgstr "Nueva contraseña"
+
+msgid "Current password (required to change password)"
+msgstr "Contraseña actual (requerida para cambiar la contraseña)"
+
+msgid "Confirm new password"
+msgstr "Confirmar nueva contraseña"
+
+msgid "Current password is required to change password."
+msgstr "La contraseña actual es necesaria para cambiar la contraseña."
+
+msgid "Passwords do not match."
+msgstr "Las contraseñas no coinciden."
+
+msgid "Current password is incorrect."
+msgstr "La contraseña actual es incorrecta."
+
+msgid "No email set — password reset via email will not work."
+msgstr "No hay correo electrónico configurado — el restablecimiento de contraseña por correo electrónico no funcionará."
+
 msgid "Two-factor authentication"
 msgstr "Autenticación de dos factores"
 
@@ -224,3 +353,54 @@ msgstr "Verificar"
 
 msgid "Back"
 msgstr "Volver"
+
+msgid "SMTP configured"
+msgstr "SMTP configurado"
+
+msgid "SMTP not configured"
+msgstr "SMTP no configurado"
+
+msgid "SMTP Host"
+msgstr "Host SMTP"
+
+msgid "SMTP Port"
+msgstr "Puerto SMTP"
+
+msgid "SMTP Username"
+msgstr "Usuario SMTP"
+
+msgid "SMTP Password (leave blank to keep current)"
+msgstr "Contraseña SMTP (dejar en blanco para mantener)"
+
+msgid "From address"
+msgstr "Dirección de origen"
+
+msgid "Test mode"
+msgstr "Modo de prueba"
+
+msgid "Test recipient"
+msgstr "Destinatario de prueba"
+
+msgid "Save & continue"
+msgstr "Guardar y continuar"
+
+msgid "Skip"
+msgstr "Omitir"
+
+msgid "Configure SMTP to enable email reports and password reset."
+msgstr "Configure SMTP para habilitar informes por correo y restablecimiento de contraseña."
+
+msgid "Without SMTP, password reset via email will not work."
+msgstr "Sin SMTP, el restablecimiento de contraseña por correo no funcionará."
+
+msgid "Instance saved."
+msgstr "Instancia guardada."
+
+msgid "Account saved."
+msgstr "Cuenta guardada."
+
+msgid "SMTP saved."
+msgstr "SMTP guardado."
+
+msgid "Schedule saved."
+msgstr "Programación guardada."

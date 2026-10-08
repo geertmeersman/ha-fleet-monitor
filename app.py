@@ -1,5 +1,6 @@
 import io
 import os
+import secrets
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -13,11 +14,25 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_babel import Babel
 from flask_babel import gettext as _
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from db import delete_instance, delete_setting, get_instances, get_setting, init_db, set_setting, upsert_instance
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
+
+with app.app_context():
+    init_db()
+
+
+def _get_or_create_secret_key():
+    key = get_setting("secret_key")
+    if not key:
+        key = secrets.token_hex(32)
+        set_setting("secret_key", key)
+    return key
+
+
+app.secret_key = _get_or_create_secret_key()
 
 SUPPORTED_LANGS = ["en", "nl", "fr", "de", "es"]
 
@@ -50,6 +65,44 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return decorated
+
+
+def setup_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not get_setting("password_hash"):
+            return redirect(url_for("setup"))
+        return f(*args, **kwargs)
+
+    return decorated
+
+
+def get_smtp_config():
+    return {
+        "host": get_setting("smtp_host"),
+        "port": int(get_setting("smtp_port") or 587),
+        "user": get_setting("smtp_user"),
+        "password": get_setting("smtp_password"),
+        "from": get_setting("smtp_from"),
+        "test_mode": (get_setting("smtp_test_mode") or "false").lower() == "true",
+        "test_recipient": get_setting("smtp_test_recipient"),
+    }
+
+
+def send_smtp(to, subject, html):
+    cfg = get_smtp_config()
+    if not all([cfg["host"], cfg["user"], cfg["password"]]):
+        return False
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"] = cfg["from"] or cfg["user"]
+    msg["To"] = to
+    msg.attach(MIMEText(html, "html"))
+    with smtplib.SMTP(cfg["host"], cfg["port"]) as server:
+        server.starttls()
+        server.login(cfg["user"], cfg["password"])
+        server.sendmail(cfg["from"] or cfg["user"], [to], msg.as_string())
+    return True
 
 
 def check_instance(instance):
@@ -114,14 +167,15 @@ def check_instance(instance):
 def send_weekly_email():
     from datetime import datetime
 
-    smtp_host = os.environ.get("SMTP_HOST")
-    smtp_port = int(os.environ.get("SMTP_PORT", 587))
-    smtp_user = os.environ.get("SMTP_USER")
-    smtp_pass = os.environ.get("SMTP_PASS")
-    smtp_from = os.environ.get("SMTP_FROM", smtp_user)
-    test_mode = os.environ.get("SMTP_TEST_MODE", "false").lower() == "true"
-    test_recipient = os.environ.get("SMTP_TEST_RECIPIENT")
-    admin_cc = os.environ.get("SMTP_ADMIN_CC")
+    cfg = get_smtp_config()
+    smtp_host = cfg["host"]
+    smtp_port = cfg["port"]
+    smtp_user = cfg["user"]
+    smtp_pass = cfg["password"]
+    smtp_from = cfg["from"] or smtp_user
+    test_mode = cfg["test_mode"]
+    test_recipient = cfg["test_recipient"]
+    admin_cc = get_setting("admin_email")
 
     if not all([smtp_host, smtp_user, smtp_pass]):
         print("SMTP niet geconfigureerd, email overgeslagen.", flush=True)
@@ -232,10 +286,33 @@ def set_lang(lang):
     return redirect(request.referrer or url_for("index"))
 
 
+@app.route("/setup", methods=["GET", "POST"])
+def setup():
+    if get_setting("password_hash"):
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        b = request.get_json() if request.is_json else request.form
+        email = (b.get("email") or "").strip()
+        password = (b.get("password") or "").strip()
+        if not email or not password:
+            if request.is_json:
+                return jsonify({"error": _("Fill in all required fields.")}), 400
+            return render_template("setup.html", error=_("Fill in all required fields."))
+        set_setting("password_hash", generate_password_hash(password))
+        set_setting("admin_email", email)
+        session["authenticated"] = True
+        if request.is_json:
+            return jsonify({"status": "ok"})
+        return redirect(url_for("index"))
+    return render_template("setup.html", error=None)
+
+
 @app.route("/login", methods=["GET", "POST"])
+@setup_required
 def login():
     if request.method == "POST":
-        if request.form.get("password") == os.environ.get("APP_PASSWORD"):
+        password_hash = get_setting("password_hash")
+        if password_hash and check_password_hash(password_hash, request.form.get("password", "")):
             totp_secret = get_setting("totp_secret")
             if totp_secret:
                 session["pending_2fa"] = True
@@ -247,6 +324,7 @@ def login():
 
 
 @app.route("/login/totp", methods=["POST"])
+@setup_required
 def login_totp():
     if not session.get("pending_2fa"):
         return redirect(url_for("login"))
@@ -259,6 +337,63 @@ def login_totp():
     return render_template("login.html", step="totp", error=_("Invalid code"))
 
 
+@app.route("/forgot-password", methods=["GET", "POST"])
+@setup_required
+def forgot_password():
+    if request.method == "POST":
+        admin_email = get_setting("admin_email")
+        if not admin_email:
+            return render_template("forgot_password.html", error=_("No admin email configured."), sent=False)
+        token = secrets.token_urlsafe(32)
+        set_setting("reset_token", token)
+        reset_url = url_for("reset_password", token=token, _external=True)
+        html = f"<p>Click the link to reset your password:</p><p><a href='{reset_url}'>{reset_url}</a></p><p>This link expires after use.</p>"
+        try:
+            send_smtp(admin_email, "HA Fleet Monitor — Password reset", html)
+            return render_template("forgot_password.html", error=None, sent=True)
+        except Exception:
+            return render_template(
+                "forgot_password.html", error=_("Failed to send email. Check SMTP settings."), sent=False
+            )
+    return render_template("forgot_password.html", error=None, sent=False)
+
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    stored = get_setting("reset_token")
+    if not stored or stored != token:
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        password = request.form.get("password", "").strip()
+        if not password:
+            return render_template("reset_password.html", token=token, error=_("Fill in all required fields."))
+        set_setting("password_hash", generate_password_hash(password))
+        delete_setting("reset_token")
+        return redirect(url_for("login"))
+    return render_template("reset_password.html", token=token, error=None)
+
+
+@app.route("/api/account", methods=["POST"])
+@login_required
+def api_account():
+    b = request.get_json()
+    if b.get("email"):
+        set_setting("admin_email", b["email"].strip())
+    if b.get("password"):
+        current = b.get("current_password", "")
+        stored_hash = get_setting("password_hash")
+        if not stored_hash or not check_password_hash(stored_hash, current):
+            return jsonify({"error": _("Current password is incorrect.")}), 400
+        set_setting("password_hash", generate_password_hash(b["password"].strip()))
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/account", methods=["GET"])
+@login_required
+def api_account_get():
+    return jsonify({"email": get_setting("admin_email") or ""})
+
+
 @app.route("/logout")
 def logout():
     session.clear()
@@ -268,10 +403,11 @@ def logout():
 @app.route("/api/config")
 @login_required
 def api_config():
+    cfg = get_smtp_config()
     return jsonify(
         {
-            "test_mode": os.environ.get("SMTP_TEST_MODE", "false").lower() == "true",
-            "test_recipient": os.environ.get("SMTP_TEST_RECIPIENT", ""),
+            "test_mode": cfg["test_mode"],
+            "test_recipient": cfg["test_recipient"] or "",
         }
     )
 
@@ -283,8 +419,9 @@ def index():
 
 
 @app.route("/admin")
+@app.route("/admin/<tab>")
 @login_required
-def admin():
+def admin(tab="instances"):
     return render_template("admin.html")
 
 
@@ -383,6 +520,92 @@ def api_2fa_status():
     return jsonify({"enabled": get_setting("totp_secret") is not None})
 
 
+@app.route("/api/smtp", methods=["GET"])
+@login_required
+def api_smtp_get():
+    cfg = get_smtp_config()
+    return jsonify(
+        {
+            "host": cfg["host"] or "",
+            "port": cfg["port"],
+            "user": cfg["user"] or "",
+            "from": cfg["from"] or "",
+            "test_mode": cfg["test_mode"],
+            "test_recipient": cfg["test_recipient"] or "",
+            "configured": bool(cfg["host"] and cfg["user"] and cfg["password"]),
+        }
+    )
+
+
+@app.route("/api/smtp", methods=["POST"])
+@login_required
+def api_smtp_save():
+    b = request.get_json()
+    for key in ["host", "port", "user", "from", "test_recipient"]:
+        if key in b:
+            set_setting(f"smtp_{key}", str(b[key]).strip())
+    if b.get("password"):
+        set_setting("smtp_password", b["password"].strip())
+    set_setting("smtp_test_mode", "true" if b.get("test_mode") else "false")
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/smtp/test", methods=["POST"])
+@login_required
+def api_smtp_test():
+    admin_email = get_setting("admin_email")
+    if not admin_email:
+        return jsonify({"error": _("No admin email configured.")}), 400
+    try:
+        send_smtp(admin_email, "HA Fleet Monitor — SMTP test", "<p>SMTP is working correctly.</p>")
+        return jsonify({"status": "ok"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/api/schedule", methods=["GET"])
+@login_required
+def api_schedule_get():
+    return jsonify(
+        {
+            "day": get_setting("report_day") or "mon",
+            "hour": int(get_setting("report_hour") or 8),
+        }
+    )
+
+
+@app.route("/api/schedule", methods=["POST"])
+@login_required
+def api_schedule_save():
+    b = request.get_json()
+    set_setting("report_day", b.get("day", "mon"))
+    set_setting("report_hour", str(b.get("hour", 8)))
+    reschedule = app.config.get("reschedule")
+    if reschedule:
+        reschedule()
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/send-report/preview", methods=["GET"])
+@login_required
+def api_send_report_preview():
+    cfg = get_smtp_config()
+    admin_email = get_setting("admin_email")
+    instances = get_instances()
+    recipients = []
+    for inst in instances:
+        email = inst.get("email")
+        if cfg["test_mode"] and cfg["test_recipient"]:
+            actual = cfg["test_recipient"]
+        else:
+            actual = email
+        if actual and actual not in recipients:
+            recipients.append(actual)
+    if admin_email and admin_email not in recipients:
+        recipients.append(f"{admin_email} (CC)")
+    return jsonify({"recipients": recipients, "test_mode": cfg["test_mode"]})
+
+
 @app.route("/api/send-report", methods=["POST"])
 @login_required
 def api_send_report():
@@ -391,8 +614,15 @@ def api_send_report():
 
 
 if __name__ == "__main__":
-    init_db()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(send_weekly_email, "cron", day_of_week="mon", hour=8, minute=0)
+
+    def reschedule():
+        day = get_setting("report_day") or "mon"
+        hour = int(get_setting("report_hour") or 8)
+        scheduler.remove_all_jobs()
+        scheduler.add_job(send_weekly_email, "cron", day_of_week=day, hour=hour, minute=0)
+
+    reschedule()
+    app.config["reschedule"] = reschedule
     scheduler.start()
     app.run(host="0.0.0.0", port=5000)
