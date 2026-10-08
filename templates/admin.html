@@ -1,4 +1,4 @@
-{% from 'macros.html' import lang_switcher, footer %}
+{% from 'macros.html' import lang_switcher, theme_toggle, footer %}
 <!DOCTYPE html>
 <html lang="{{ session.get('lang', 'en') }}" class="dark">
 <head>
@@ -8,57 +8,58 @@
     <link rel="icon" href="/static/ha-favicon.png">
     <link rel="stylesheet" href="/static/tailwind.css">
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-6 font-sans">
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen p-6 font-sans">
     <div class="max-w-3xl mx-auto">
-        <header class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
+        <header class="flex justify-between items-center mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
             <h1 class="text-2xl font-bold flex items-center gap-2">
                 <img src="/static/ha-favicon.png" class="w-7 h-7 inline"> {{ _('Admin') }}
             </h1>
             <div class="flex items-center gap-4">
-                <a href="/" class="text-xs text-sky-400 hover:underline">← {{ _('Back to dashboard') }}</a>
+                <a href="/" class="text-xs text-sky-500 dark:text-sky-400 hover:underline">← {{ _('Back to dashboard') }}</a>
                 {{ lang_switcher() }}
-                <a href="/logout" class="text-xs text-slate-500 hover:text-slate-300">{{ _('Logout') }}</a>
+                {{ theme_toggle() }}
+                <a href="/logout" class="text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300">{{ _('Logout') }}</a>
             </div>
         </header>
 
         <div id="test-mode-banner" class="hidden mb-6 flex items-center gap-3 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3">
-            <span class="text-amber-400 text-lg">⚠️</span>
+            <span class="text-amber-500 text-lg">⚠️</span>
             <div>
-                <p class="text-sm font-semibold text-amber-400">{{ _('Email test mode active') }}</p>
-                <p class="text-xs text-slate-400">{{ _('All emails are sent to') }} <span id="test-recipient" class="text-amber-300 font-mono"></span> {{ _('instead of the configured address per instance.') }}</p>
+                <p class="text-sm font-semibold text-amber-500 dark:text-amber-400">{{ _('Email test mode active') }}</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('All emails are sent to') }} <span id="test-recipient" class="text-amber-600 dark:text-amber-300 font-mono"></span> {{ _('instead of the configured address per instance.') }}</p>
             </div>
         </div>
 
-        <div class="bg-slate-800/40 border border-slate-700 rounded-xl p-5 mb-8">
-            <h2 class="font-semibold text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-8">
+            <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
             <div class="grid grid-cols-1 gap-3">
-                <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-name"  type="text"     placeholder="{{ _('Name (e.g. Home)') }}"         class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-url"   type="text"     placeholder="{{ _('URL (https://...)') }}"        class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-token" type="password" placeholder="{{ _('Long-lived token') }}"         class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <input id="f-email" type="email"    placeholder="{{ _('Email address (optional)') }}" class="bg-slate-800 border border-slate-700 rounded px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500">
-                <label class="flex items-center gap-2 text-sm text-slate-300 mt-1">
+                <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-name"  type="text"     placeholder="{{ _('Name (e.g. Home)') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-url"   type="text"     placeholder="{{ _('URL (https://...)') }}"        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-token" type="password" placeholder="{{ _('Long-lived token') }}"         class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <input id="f-email" type="email"    placeholder="{{ _('Email address (optional)') }}" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
+                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 mt-1">
                     <input id="f-managed" type="checkbox" class="accent-sky-500"> {{ _('Managed (self-managed)') }}
                 </label>
             </div>
             <div class="flex gap-2 mt-4">
                 <button onclick="saveInstance()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Save') }}</button>
-                <button onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">{{ _('Cancel') }}</button>
+                <button onclick="resetForm()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
             </div>
         </div>
 
         <div id="instances-list" class="space-y-3"></div>
 
-        <div class="mt-8 pt-6 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xs text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
+        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
             <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 {{ _('Send report now') }}</button>
         </div>
 
-        <div class="mt-6 pt-6 border-t border-slate-800 flex items-center justify-between">
-            <span class="text-xs text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
+        <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
             <div class="flex gap-2">
-                <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">⬇️ {{ _('Export') }}</button>
-                <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">⬆️ {{ _('Import') }}</button>
+                <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬇️ {{ _('Export') }}</button>
+                <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬆️ {{ _('Import') }}</button>
             </div>
         </div>
         {{ footer(app_version) }}
@@ -66,23 +67,23 @@
 
     <!-- Import modal -->
     <div id="import-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
             <div class="flex items-center gap-3 mb-4">
                 <span class="text-2xl">⬆️</span>
-                <h2 class="text-base font-semibold text-slate-100">{{ _('Import') }}</h2>
+                <h2 class="text-base font-semibold text-slate-800 dark:text-slate-100">{{ _('Import') }}</h2>
             </div>
             <div id="import-dropzone"
-                class="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-sky-500 transition-colors"
+                class="border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-sky-500 transition-colors"
                 onclick="document.getElementById('import-file').click()"
                 ondragover="event.preventDefault(); this.classList.add('border-sky-500')"
                 ondragleave="this.classList.remove('border-sky-500')"
                 ondrop="handleImportDrop(event)">
-                <p class="text-sm text-slate-400">{{ _('Drop JSON file here or click to browse') }}</p>
-                <p id="import-filename" class="text-xs text-sky-400 mt-2"></p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">{{ _('Drop JSON file here or click to browse') }}</p>
+                <p id="import-filename" class="text-xs text-sky-500 dark:text-sky-400 mt-2"></p>
                 <input id="import-file" type="file" accept=".json" class="hidden" onchange="handleImportFile(this)">
             </div>
             <div class="flex justify-end gap-3 mt-4">
-                <button onclick="closeImportModal()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">{{ _('Cancel') }}</button>
+                <button onclick="closeImportModal()" class="px-4 py-2 text-sm rounded bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
                 <button id="import-confirm" onclick="runImport()" disabled class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white disabled:opacity-40 disabled:cursor-not-allowed">{{ _('Import') }}</button>
             </div>
         </div>
@@ -104,6 +105,7 @@
             importAdded: "{{ _('added') }}",
             importSkipped: "{{ _('skipped (already exists)') }}",
             importInvalid: "{{ _('Invalid entries missing required fields') }}",
+            sending: "{{ _('Sending...') }}",
             sent: "{{ _('Sent') }}",
         };
 
@@ -112,17 +114,17 @@
             const instances = await res.json();
             const list = document.getElementById('instances-list');
             list.innerHTML = instances.length === 0
-                ? `<p class="text-sm text-slate-500">${T.noInstances}</p>`
+                ? `<p class="text-sm text-slate-400 dark:text-slate-500">${T.noInstances}</p>`
                 : instances.map(i => `
-                    <div class="bg-slate-800/40 border border-slate-700 rounded-xl p-4 flex justify-between items-center">
+                    <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex justify-between items-center">
                         <div>
-                            <p class="font-semibold text-slate-200">${i.name}</p>
-                            <p class="text-xs text-sky-400">${i.url}</p>
-                            <p class="text-xs text-slate-500 mt-0.5">${i.email || T.noEmail}</p>
-                            <p class="text-xs mt-0.5">${i.managed ? `<span class="text-sky-400 font-semibold">${T.managed}</span>` : `<span class="text-slate-500">${T.monitored}</span>`}</p>
+                            <p class="font-semibold text-slate-800 dark:text-slate-200">${i.name}</p>
+                            <p class="text-xs text-sky-500 dark:text-sky-400">${i.url}</p>
+                            <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">${i.email || T.noEmail}</p>
+                            <p class="text-xs mt-0.5">${i.managed ? `<span class="text-sky-500 dark:text-sky-400 font-semibold">${T.managed}</span>` : `<span class="text-slate-400 dark:text-slate-500">${T.monitored}</span>`}</p>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick='editInstance(${JSON.stringify(i)})' class="px-3 py-1 text-xs rounded bg-slate-700 hover:bg-slate-600 text-slate-200">${T.edit}</button>
+                            <button onclick='editInstance(${JSON.stringify(i)})' class="px-3 py-1 text-xs rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200">${T.edit}</button>
                             <button onclick="deleteInstance('${i.id}')" class="px-3 py-1 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">${T.delete}</button>
                         </div>
                     </div>
