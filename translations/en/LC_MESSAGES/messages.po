@@ -404,3 +404,6 @@ msgstr "SMTP saved."
 
 msgid "Schedule saved."
 msgstr "Schedule saved."
+
+msgid "SMTP test failed. Check your configuration."
+msgstr "SMTP test failed. Check your configuration."

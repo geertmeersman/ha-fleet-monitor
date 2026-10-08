@@ -283,7 +283,14 @@ def send_weekly_email():
 def set_lang(lang):
     if lang in SUPPORTED_LANGS:
         session["lang"] = lang
-    return redirect(request.referrer or url_for("index"))
+    referrer = request.referrer
+    if referrer:
+        from urllib.parse import urlparse
+
+        parsed = urlparse(referrer)
+        if parsed.netloc and parsed.netloc != urlparse(request.host_url).netloc:
+            referrer = None
+    return redirect(referrer or url_for("index"))
 
 
 @app.route("/setup", methods=["GET", "POST"])
@@ -560,7 +567,8 @@ def api_smtp_test():
         send_smtp(admin_email, "HA Fleet Monitor — SMTP test", "<p>SMTP is working correctly.</p>")
         return jsonify({"status": "ok"})
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        print(f"SMTP test failed: {e}", flush=True)
+        return jsonify({"error": _("SMTP test failed. Check your configuration.")}), 500
 
 
 @app.route("/api/schedule", methods=["GET"])
