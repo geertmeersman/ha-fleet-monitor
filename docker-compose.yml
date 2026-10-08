@@ -1,5 +1,5 @@
 services:
-  ha-monitor:
+  ha-fleet-monitor:
     build: .
     container_name: ha-fleet-monitor
     restart: unless-stopped
