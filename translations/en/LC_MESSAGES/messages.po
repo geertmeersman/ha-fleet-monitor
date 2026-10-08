@@ -176,3 +176,51 @@ msgstr "Invalid password"
 
 msgid "Back to dashboard"
 msgstr "Back to dashboard"
+
+msgid "Two-factor authentication"
+msgstr "Two-factor authentication"
+
+msgid "2FA is enabled"
+msgstr "2FA is enabled"
+
+msgid "2FA is not enabled"
+msgstr "2FA is not enabled"
+
+msgid "Set up 2FA"
+msgstr "Set up 2FA"
+
+msgid "Disable 2FA"
+msgstr "Disable 2FA"
+
+msgid "Are you sure you want to disable 2FA?"
+msgstr "Are you sure you want to disable 2FA?"
+
+msgid "Or enter this key manually:"
+msgstr "Or enter this key manually:"
+
+msgid "Click to copy"
+msgstr "Click to copy"
+
+msgid "Copied!"
+msgstr "Copied!"
+
+msgid "Invalid code"
+msgstr "Invalid code"
+
+msgid "Scan the QR code with your authenticator app, then enter the code to confirm."
+msgstr "Scan the QR code with your authenticator app, then enter the code to confirm."
+
+msgid "6-digit code"
+msgstr "6-digit code"
+
+msgid "Confirm"
+msgstr "Confirm"
+
+msgid "Authenticator code"
+msgstr "Authenticator code"
+
+msgid "Verify"
+msgstr "Verify"
+
+msgid "Back"
+msgstr "Back"

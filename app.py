@@ -1,16 +1,20 @@
+import io
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from functools import wraps
 
+import pyotp
+import qrcode
+import qrcode.image.svg
 import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import Flask, jsonify, redirect, render_template, request, session, url_for
 from flask_babel import Babel
 from flask_babel import gettext as _
 
-from db import delete_instance, get_instances, init_db, upsert_instance
+from db import delete_instance, delete_setting, get_instances, get_setting, init_db, set_setting, upsert_instance
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-key")
@@ -232,10 +236,27 @@ def set_lang(lang):
 def login():
     if request.method == "POST":
         if request.form.get("password") == os.environ.get("APP_PASSWORD"):
+            totp_secret = get_setting("totp_secret")
+            if totp_secret:
+                session["pending_2fa"] = True
+                return render_template("login.html", step="totp", error=None)
             session["authenticated"] = True
             return redirect(url_for("index"))
-        return render_template("login.html", error=_("Invalid password"))
-    return render_template("login.html", error=None)
+        return render_template("login.html", step="password", error=_("Invalid password"))
+    return render_template("login.html", step="password", error=None)
+
+
+@app.route("/login/totp", methods=["POST"])
+def login_totp():
+    if not session.get("pending_2fa"):
+        return redirect(url_for("login"))
+    code = request.form.get("code", "").strip()
+    totp_secret = get_setting("totp_secret")
+    if totp_secret and pyotp.TOTP(totp_secret).verify(code):
+        session.pop("pending_2fa", None)
+        session["authenticated"] = True
+        return redirect(url_for("index"))
+    return render_template("login.html", step="totp", error=_("Invalid code"))
 
 
 @app.route("/logout")
@@ -321,6 +342,45 @@ def update_api():
         timeout=10,
     )
     return jsonify({"status": "ok" if res.status_code == 200 else "error", "code": res.status_code})
+
+
+@app.route("/api/2fa/setup", methods=["GET"])
+@login_required
+def api_2fa_setup():
+    secret = pyotp.random_base32()
+    session["pending_totp_secret"] = secret
+    app_name = "HA Fleet Monitor"
+    uri = pyotp.TOTP(secret).provisioning_uri(name=app_name, issuer_name=app_name)
+    img = qrcode.make(uri, image_factory=qrcode.image.svg.SvgPathImage)
+    buf = io.BytesIO()
+    img.save(buf)
+    svg = buf.getvalue().decode("utf-8")
+    return jsonify({"secret": secret, "svg": svg})
+
+
+@app.route("/api/2fa/confirm", methods=["POST"])
+@login_required
+def api_2fa_confirm():
+    secret = session.get("pending_totp_secret")
+    code = request.get_json().get("code", "").strip()
+    if not secret or not pyotp.TOTP(secret).verify(code):
+        return jsonify({"error": _("Invalid code")}), 400
+    set_setting("totp_secret", secret)
+    session.pop("pending_totp_secret", None)
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/2fa/disable", methods=["POST"])
+@login_required
+def api_2fa_disable():
+    delete_setting("totp_secret")
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/2fa/status", methods=["GET"])
+@login_required
+def api_2fa_status():
+    return jsonify({"enabled": get_setting("totp_secret") is not None})
 
 
 @app.route("/api/send-report", methods=["POST"])

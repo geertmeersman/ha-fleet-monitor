@@ -176,3 +176,51 @@ msgstr "Contraseña inválida"
 
 msgid "Back to dashboard"
 msgstr "Volver al panel"
+
+msgid "Two-factor authentication"
+msgstr "Autenticación de dos factores"
+
+msgid "2FA is enabled"
+msgstr "2FA está activado"
+
+msgid "2FA is not enabled"
+msgstr "2FA no está activado"
+
+msgid "Set up 2FA"
+msgstr "Configurar 2FA"
+
+msgid "Disable 2FA"
+msgstr "Desactivar 2FA"
+
+msgid "Are you sure you want to disable 2FA?"
+msgstr "¿Está seguro de que desea desactivar 2FA?"
+
+msgid "Or enter this key manually:"
+msgstr "O introduzca esta clave manualmente:"
+
+msgid "Click to copy"
+msgstr "Haga clic para copiar"
+
+msgid "Copied!"
+msgstr "¡Copiado!"
+
+msgid "Invalid code"
+msgstr "Código inválido"
+
+msgid "Scan the QR code with your authenticator app, then enter the code to confirm."
+msgstr "Escanee el código QR con su aplicación de autenticación e introduzca el código para confirmar."
+
+msgid "6-digit code"
+msgstr "Código de 6 dígitos"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Authenticator code"
+msgstr "Código de autenticación"
+
+msgid "Verify"
+msgstr "Verificar"
+
+msgid "Back"
+msgstr "Volver"

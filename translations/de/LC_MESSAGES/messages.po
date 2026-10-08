@@ -176,3 +176,51 @@ msgstr "Ungültiges Passwort"
 
 msgid "Back to dashboard"
 msgstr "Zurück zum Dashboard"
+
+msgid "Two-factor authentication"
+msgstr "Zwei-Faktor-Authentifizierung"
+
+msgid "2FA is enabled"
+msgstr "2FA ist aktiviert"
+
+msgid "2FA is not enabled"
+msgstr "2FA ist nicht aktiviert"
+
+msgid "Set up 2FA"
+msgstr "2FA einrichten"
+
+msgid "Disable 2FA"
+msgstr "2FA deaktivieren"
+
+msgid "Are you sure you want to disable 2FA?"
+msgstr "Sind Sie sicher, dass Sie 2FA deaktivieren möchten?"
+
+msgid "Or enter this key manually:"
+msgstr "Oder geben Sie diesen Schlüssel manuell ein:"
+
+msgid "Click to copy"
+msgstr "Zum Kopieren klicken"
+
+msgid "Copied!"
+msgstr "Kopiert!"
+
+msgid "Invalid code"
+msgstr "Ungültiger Code"
+
+msgid "Scan the QR code with your authenticator app, then enter the code to confirm."
+msgstr "Scannen Sie den QR-Code mit Ihrer Authenticator-App und geben Sie den Code zur Bestätigung ein."
+
+msgid "6-digit code"
+msgstr "6-stelliger Code"
+
+msgid "Confirm"
+msgstr "Bestätigen"
+
+msgid "Authenticator code"
+msgstr "Authenticator-Code"
+
+msgid "Verify"
+msgstr "Verifizieren"
+
+msgid "Back"
+msgstr "Zurück"
