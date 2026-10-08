@@ -87,6 +87,30 @@ msgstr "Wekelijks rapport wordt elke maandag om 08:00 verstuurd."
 msgid "Send report now"
 msgstr "Rapport nu versturen"
 
+msgid "Export"
+msgstr "Exporteren"
+
+msgid "Export or import your instance configuration."
+msgstr "Exporteer of importeer je instantieconfiguratie."
+
+msgid "Import"
+msgstr "Importeren"
+
+msgid "Import done"
+msgstr "Import voltooid"
+
+msgid "Drop JSON file here or click to browse"
+msgstr "Sleep JSON bestand hierheen of klik om te bladeren"
+
+msgid "added"
+msgstr "toegevoegd"
+
+msgid "skipped (already exists)"
+msgstr "overgeslagen (bestaat al)"
+
+msgid "Invalid entries missing required fields"
+msgstr "Ongeldige entries met ontbrekende verplichte velden"
+
 msgid "Sending..."
 msgstr "Versturen..."
 

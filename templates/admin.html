@@ -53,7 +53,39 @@
             <span class="text-xs text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
             <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 {{ _('Send report now') }}</button>
         </div>
+
+        <div class="mt-6 pt-6 border-t border-slate-800 flex items-center justify-between">
+            <span class="text-xs text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
+            <div class="flex gap-2">
+                <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">⬇️ {{ _('Export') }}</button>
+                <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">⬆️ {{ _('Import') }}</button>
+            </div>
+        </div>
         {{ footer(app_version) }}
+    </div>
+
+    <!-- Import modal -->
+    <div id="import-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-sm shadow-2xl">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-2xl">⬆️</span>
+                <h2 class="text-base font-semibold text-slate-100">{{ _('Import') }}</h2>
+            </div>
+            <div id="import-dropzone"
+                class="border-2 border-dashed border-slate-600 rounded-lg p-8 text-center cursor-pointer hover:border-sky-500 transition-colors"
+                onclick="document.getElementById('import-file').click()"
+                ondragover="event.preventDefault(); this.classList.add('border-sky-500')"
+                ondragleave="this.classList.remove('border-sky-500')"
+                ondrop="handleImportDrop(event)">
+                <p class="text-sm text-slate-400">{{ _('Drop JSON file here or click to browse') }}</p>
+                <p id="import-filename" class="text-xs text-sky-400 mt-2"></p>
+                <input id="import-file" type="file" accept=".json" class="hidden" onchange="handleImportFile(this)">
+            </div>
+            <div class="flex justify-end gap-3 mt-4">
+                <button onclick="closeImportModal()" class="px-4 py-2 text-sm rounded bg-slate-700 hover:bg-slate-600 text-slate-300">{{ _('Cancel') }}</button>
+                <button id="import-confirm" onclick="runImport()" disabled class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white disabled:opacity-40 disabled:cursor-not-allowed">{{ _('Import') }}</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -68,7 +100,10 @@
             editInstance: "{{ _('Edit instance') }}",
             fillRequired: "{{ _('Fill in all required fields.') }}",
             deleteConfirm: "{{ _('Are you sure you want to delete') }}",
-            sending: "{{ _('Sending...') }}",
+            importDone: "{{ _('Import done') }}",
+            importAdded: "{{ _('added') }}",
+            importSkipped: "{{ _('skipped (already exists)') }}",
+            importInvalid: "{{ _('Invalid entries missing required fields') }}",
             sent: "{{ _('Sent') }}",
         };
 
@@ -131,6 +166,73 @@
             if (!confirm(`${T.deleteConfirm} "${id}"?`)) return;
             await fetch(`/api/instances/${id}`, { method: 'DELETE' });
             loadInstances();
+        }
+
+        let importData = null;
+
+        function openImportModal() {
+            importData = null;
+            document.getElementById('import-filename').textContent = '';
+            document.getElementById('import-file').value = '';
+            document.getElementById('import-confirm').disabled = true;
+            document.getElementById('import-modal').classList.remove('hidden');
+        }
+
+        function closeImportModal() {
+            document.getElementById('import-modal').classList.add('hidden');
+        }
+
+        document.getElementById('import-modal').addEventListener('click', e => {
+            if (e.target === document.getElementById('import-modal')) closeImportModal();
+        });
+
+        function handleImportDrop(event) {
+            event.preventDefault();
+            document.getElementById('import-dropzone').classList.remove('border-sky-500');
+            const file = event.dataTransfer.files[0];
+            if (file) parseImportFile(file);
+        }
+
+        function handleImportFile(input) {
+            if (input.files[0]) parseImportFile(input.files[0]);
+        }
+
+        async function parseImportFile(file) {
+            const text = await file.text();
+            let instances;
+            try { instances = JSON.parse(text); } catch { return alert('Invalid JSON'); }
+            if (!Array.isArray(instances)) return alert('Invalid format');
+            const required = ['id', 'name', 'url', 'token'];
+            const invalid = instances.filter(i => required.some(f => !i[f]?.trim()));
+            if (invalid.length) return alert(`${T.importInvalid}: ${invalid.map(i => i.id || '?').join(', ')}`);
+            importData = instances;
+            document.getElementById('import-filename').textContent = `${file.name} (${instances.length})`;
+            document.getElementById('import-confirm').disabled = false;
+        }
+
+        async function runImport() {
+            if (!importData) return;
+            const res = await fetch('/api/instances');
+            const existing = await res.json();
+            const existingIds = new Set(existing.map(i => i.id));
+            const toImport = importData.filter(i => !existingIds.has(i.id));
+            const skipped = importData.length - toImport.length;
+            for (const inst of toImport) {
+                await fetch('/api/instances', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(inst) });
+            }
+            closeImportModal();
+            loadInstances();
+            alert(`${T.importDone}: ${toImport.length} ${T.importAdded}, ${skipped} ${T.importSkipped}`);
+        }
+
+        async function exportConfig() {
+            const res = await fetch('/api/instances');
+            const instances = await res.json();
+            const blob = new Blob([JSON.stringify(instances, null, 2)], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'ha-fleet-monitor-config.json';
+            a.click();
         }
 
         async function sendReport(btn) {
