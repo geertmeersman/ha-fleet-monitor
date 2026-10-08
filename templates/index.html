@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HA Fleet Monitor</title>
-    <link rel="icon" href="https://www.home-assistant.io/images/favicon-192x192.png">
+    <link rel="icon" href="/static/ha-favicon.png">
     <link rel="stylesheet" href="/static/tailwind.css">
 </head>
 
@@ -14,7 +14,7 @@
     <div class="max-w-6xl mx-auto">
         <header class="flex justify-between items-center mb-8 border-b border-slate-800 pb-4">
             <h1 class="text-2xl font-bold flex items-center gap-2">
-                <span><img src="https://www.home-assistant.io/images/favicon-192x192.png" class="w-7 h-7 inline"></span>
+                <span><img src="/static/ha-favicon.png" class="w-7 h-7 inline"></span>
                 HA Fleet Monitor
             </h1>
             <div class="flex items-center gap-4">
@@ -163,7 +163,7 @@
             if (!hasUpdates) {
                 clearInterval(faviconInterval);
                 faviconInterval = null;
-                link.href = 'https://www.home-assistant.io/images/favicon-192x192.png';
+                link.href = '/static/ha-favicon.png';
                 return;
             }
             if (faviconInterval) return;
@@ -171,7 +171,7 @@
             faviconInterval = setInterval(() => {
                 toggle = !toggle;
                 link.href = toggle
-                    ? 'https://www.home-assistant.io/images/favicon-192x192.png'
+                    ? '/static/ha-favicon.png'
                     : "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23f59e0b'/><text y='.9em' font-size='70' x='15'>📦</text></svg>";
             }, 1000);
         }

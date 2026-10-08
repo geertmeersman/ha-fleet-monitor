@@ -1,0 +1,16 @@
+# Exclude everything
+*
+
+# Only allow necessary files
+!app.py
+!db.py
+!requirements.txt
+!VERSION
+!tailwind.css
+!tailwind.config.js
+!templates/
+!templates/**
+!translations/
+!translations/**
+!static/
+!static/**
