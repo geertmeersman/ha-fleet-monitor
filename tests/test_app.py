@@ -46,7 +46,7 @@ def test_redirect_to_setup_when_no_password_set(app, client):
     import db
 
     db.delete_setting("password_hash")
-    res = client.get("/")
+    res = client.get("/login")
     assert res.status_code == 302
     assert "/setup" in res.headers["Location"]
 
