@@ -12,6 +12,12 @@ msgstr "Laden..."
 msgid "Admin"
 msgstr "Verwaltung"
 
+msgid "Instances"
+msgstr "Instanzen"
+
+msgid "Settings"
+msgstr "Einstellungen"
+
 msgid "Logout"
 msgstr "Abmelden"
 
@@ -177,6 +183,129 @@ msgstr "Ungültiges Passwort"
 msgid "Back to dashboard"
 msgstr "Zurück zum Dashboard"
 
+msgid "Setup"
+msgstr "Einrichtung"
+
+msgid "Welcome! Create your admin account to get started."
+msgstr "Willkommen! Erstellen Sie Ihr Admin-Konto, um zu beginnen."
+
+msgid "Create account"
+msgstr "Konto erstellen"
+
+msgid "Email"
+msgstr "E-Mail"
+
+msgid "Account"
+msgstr "Konto"
+
+msgid "New password (leave blank to keep current)"
+msgstr "Neues Passwort (leer lassen, um das aktuelle zu behalten)"
+
+msgid "Forgot password?"
+msgstr "Passwort vergessen?"
+
+msgid "Forgot password"
+msgstr "Passwort vergessen"
+
+msgid "Send reset link"
+msgstr "Reset-Link senden"
+
+msgid "A reset link will be sent to your admin email address."
+msgstr "Ein Reset-Link wird an Ihre Admin-E-Mail-Adresse gesendet."
+
+msgid "Reset link sent to your admin email."
+msgstr "Reset-Link an Ihre Admin-E-Mail gesendet."
+
+msgid "No admin email configured."
+msgstr "Keine Admin-E-Mail konfiguriert."
+
+msgid "Failed to send email. Check SMTP settings."
+msgstr "E-Mail senden fehlgeschlagen. Überprüfen Sie die SMTP-Einstellungen."
+
+msgid "Back to login"
+msgstr "Zurück zur Anmeldung"
+
+msgid "Test"
+msgstr "Testen"
+
+msgid "Test email sent successfully."
+msgstr "Test-E-Mail erfolgreich gesendet."
+
+msgid "Report schedule"
+msgstr "Berichtszeitplan"
+
+msgid "Day"
+msgstr "Tag"
+
+msgid "Hour"
+msgstr "Stunde"
+
+msgid "Monday"
+msgstr "Montag"
+
+msgid "Tuesday"
+msgstr "Dienstag"
+
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+msgid "Thursday"
+msgstr "Donnerstag"
+
+msgid "Friday"
+msgstr "Freitag"
+
+msgid "Saturday"
+msgstr "Samstag"
+
+msgid "Sunday"
+msgstr "Sonntag"
+
+msgid "Send"
+msgstr "Senden"
+
+msgid "This will send the report to"
+msgstr "Dies sendet den Bericht an"
+
+msgid "Test mode active"
+msgstr "Testmodus aktiv"
+
+msgid "No recipients configured."
+msgstr "Keine Empfänger konfiguriert."
+
+msgid "SMTP configured"
+msgstr "SMTP konfiguriert"
+
+msgid "SMTP not configured"
+msgstr "SMTP nicht konfiguriert"
+
+msgid "Next"
+msgstr "Weiter"
+
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+msgid "New password"
+msgstr "Neues Passwort"
+
+msgid "Current password (required to change password)"
+msgstr "Aktuelles Passwort (erforderlich zum Ändern des Passworts)"
+
+msgid "Confirm new password"
+msgstr "Neues Passwort bestätigen"
+
+msgid "Current password is required to change password."
+msgstr "Das aktuelle Passwort ist erforderlich, um das Passwort zu ändern."
+
+msgid "Passwords do not match."
+msgstr "Passwörter stimmen nicht überein."
+
+msgid "Current password is incorrect."
+msgstr "Das aktuelle Passwort ist falsch."
+
+msgid "No email set — password reset via email will not work."
+msgstr "Keine E-Mail festgelegt — Passwort-Reset per E-Mail wird nicht funktionieren."
+
 msgid "Two-factor authentication"
 msgstr "Zwei-Faktor-Authentifizierung"
 
@@ -224,3 +353,54 @@ msgstr "Verifizieren"
 
 msgid "Back"
 msgstr "Zurück"
+
+msgid "SMTP configured"
+msgstr "SMTP konfiguriert"
+
+msgid "SMTP not configured"
+msgstr "SMTP nicht konfiguriert"
+
+msgid "SMTP Host"
+msgstr "SMTP-Host"
+
+msgid "SMTP Port"
+msgstr "SMTP-Port"
+
+msgid "SMTP Username"
+msgstr "SMTP-Benutzername"
+
+msgid "SMTP Password (leave blank to keep current)"
+msgstr "SMTP-Passwort (leer lassen um aktuelles zu behalten)"
+
+msgid "From address"
+msgstr "Absenderadresse"
+
+msgid "Test mode"
+msgstr "Testmodus"
+
+msgid "Test recipient"
+msgstr "Testempfänger"
+
+msgid "Save & continue"
+msgstr "Speichern & weiter"
+
+msgid "Skip"
+msgstr "Überspringen"
+
+msgid "Configure SMTP to enable email reports and password reset."
+msgstr "Konfigurieren Sie SMTP um E-Mail-Berichte und Passwort-Reset zu aktivieren."
+
+msgid "Without SMTP, password reset via email will not work."
+msgstr "Ohne SMTP funktioniert die Passwort-Zurücksetzung per E-Mail nicht."
+
+msgid "Instance saved."
+msgstr "Instanz gespeichert."
+
+msgid "Account saved."
+msgstr "Konto gespeichert."
+
+msgid "SMTP saved."
+msgstr "SMTP gespeichert."
+
+msgid "Schedule saved."
+msgstr "Zeitplan gespeichert."

@@ -26,24 +26,13 @@ pre-commit install
 pre-commit install --hook-type commit-msg
 ```
 
-4. Create a `.env` file and a `data/` directory:
+4. Create a `data/` directory:
 
 ```bash
-cp .env.example .env
 mkdir data
 ```
 
-Set `APP_PASSWORD` to a password of your choice and `SECRET_KEY` to a random value:
-
-```bash
-python3 -c "import secrets; print(secrets.token_hex(32))"
-```
-
-`SECRET_KEY` is used by Flask to sign session cookies. Changing it will log out all active users.
-
-SMTP variables (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`) are optional — if `SMTP_HOST` is not set, the weekly email job is skipped silently.
-
-Set `SMTP_TEST_MODE=true` to redirect all outgoing emails to `SMTP_TEST_RECIPIENT` during development.
+All configuration (SECRET_KEY, SMTP, 2FA, schedule) is stored in the database. On first run, go to `http://localhost:5000` to create your admin account via the setup page.
 
 5. Start the dev server:
 
@@ -51,7 +40,7 @@ Set `SMTP_TEST_MODE=true` to redirect all outgoing emails to `SMTP_TEST_RECIPIEN
 flask --app app.py run
 ```
 
-Open [http://localhost:5000](http://localhost:5000) and log in with your `APP_PASSWORD`.
+Open [http://localhost:5000](http://localhost:5000) — on first run you will be redirected to `/setup` to create your admin account.
 
 6. Add your HA instances via [http://localhost:5000/admin](http://localhost:5000/admin).
 

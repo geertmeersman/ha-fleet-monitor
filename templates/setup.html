@@ -1,0 +1,125 @@
+{% from 'macros.html' import lang_switcher, theme_toggle, footer %}
+<!DOCTYPE html>
+<html lang="{{ session.get('lang', 'en') }}" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HA Fleet Monitor — {{ _('Setup') }}</title>
+    <link rel="icon" href="/static/ha-favicon.png">
+    <link rel="stylesheet" href="/static/tailwind.css">
+</head>
+<body class="bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex items-center justify-center font-sans">
+    <div class="w-full max-w-sm">
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-8 shadow-sm dark:shadow-lg">
+            <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center gap-3">
+                    <img src="/static/ha-favicon.png" class="w-8 h-8">
+                    <h1 class="text-xl font-bold">HA Fleet Monitor</h1>
+                </div>
+                <div class="flex gap-2">
+                    {{ lang_switcher() }}
+                    {{ theme_toggle() }}
+                </div>
+            </div>
+
+            <!-- Step 1: Account -->
+            <div id="step-account">
+                <p class="text-xs text-slate-400 dark:text-slate-500 mb-6">{{ _('Welcome! Create your admin account to get started.') }}</p>
+
+                {% if error %}
+                <div class="mb-4 px-3 py-2 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-500 dark:text-rose-400">{{ error }}</div>
+                {% endif %}
+
+                <form id="form-account" onsubmit="submitAccount(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Email') }}</label>
+                        <input type="email" name="email" id="s-email" autofocus required
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Password') }}</label>
+                        <input type="password" name="password" id="s-password" required
+                            class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white font-semibold">
+                        {{ _('Next') }} →
+                    </button>
+                </form>
+            </div>
+
+            <!-- Step 2: SMTP -->
+            <div id="step-smtp" class="hidden">
+                <p class="text-xs text-slate-400 dark:text-slate-500 mb-1">{{ _('Configure SMTP to enable email reports and password reset.') }}</p>
+                <p class="text-xs text-amber-500 mb-6">{{ _('Without SMTP, password reset via email will not work.') }}</p>
+
+                <div id="smtp-error" class="hidden mb-4 px-3 py-2 bg-rose-500/10 border border-rose-500/20 rounded text-xs text-rose-500 dark:text-rose-400"></div>
+
+                <form id="form-smtp" onsubmit="submitSmtp(event)" class="space-y-3">
+                    <input type="text" id="s-smtp-host" placeholder="{{ _('SMTP Host') }}"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    <input type="number" id="s-smtp-port" placeholder="{{ _('SMTP Port') }}" value="587"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    <input type="email" id="s-smtp-user" placeholder="{{ _('SMTP Username') }}"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    <input type="password" id="s-smtp-pass" placeholder="{{ _('SMTP Password') }}"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    <input type="text" id="s-smtp-from" placeholder="{{ _('From address (e.g. HA Monitor <you@example.com>)') }}"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm focus:outline-none focus:border-sky-500">
+                    <div class="flex gap-2 pt-1">
+                        <button type="submit" class="flex-1 px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white font-semibold">
+                            {{ _('Save & continue') }}
+                        </button>
+                        <button type="button" onclick="skipSmtp()" class="flex-1 px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">
+                            {{ _('Skip') }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {{ footer(app_version) }}
+    </div>
+
+    <script>
+        async function submitAccount(event) {
+            event.preventDefault();
+            const res = await fetch('/setup', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    email: document.getElementById('s-email').value.trim(),
+                    password: document.getElementById('s-password').value,
+                })
+            });
+            if (res.ok) {
+                document.getElementById('step-account').classList.add('hidden');
+                document.getElementById('step-smtp').classList.remove('hidden');
+            } else {
+                const data = await res.json();
+                location.reload();
+            }
+        }
+
+        async function submitSmtp(event) {
+            event.preventDefault();
+            const body = {
+                host: document.getElementById('s-smtp-host').value.trim(),
+                port: parseInt(document.getElementById('s-smtp-port').value) || 587,
+                user: document.getElementById('s-smtp-user').value.trim(),
+                password: document.getElementById('s-smtp-pass').value,
+                from: document.getElementById('s-smtp-from').value.trim(),
+            };
+            if (!body.host || !body.user || !body.password) {
+                const err = document.getElementById('smtp-error');
+                err.textContent = "{{ _('Fill in all required fields.') }}";
+                return err.classList.remove('hidden');
+            }
+            await fetch('/api/smtp', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body) });
+            window.location = '/';
+        }
+
+        function skipSmtp() {
+            window.location = '/';
+        }
+    </script>
+</body>
+</html>

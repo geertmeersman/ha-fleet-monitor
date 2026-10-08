@@ -3,8 +3,6 @@ services:
     build: .
     container_name: ha-fleet-monitor
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ./data:/data
     networks:

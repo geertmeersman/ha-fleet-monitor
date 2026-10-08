@@ -14,14 +14,19 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 ## Features
 
 - 📊 **Dashboard** — Overview of all HA instances with status, version and available updates
-- 📦 **Update management** — Install individual updates or all updates at once per instance
-- 🔄 **Restart** — Restart any HA instance directly from the dashboard
+- 🔧 **Managed / Monitored** — Split instances into managed (full control) and monitored (read-only)
+- 📦 **Update management** — Install individual updates or all updates at once, sequentially per instance
+- 🔄 **Restart** — Restart any managed HA instance directly from the dashboard
 - ⚠️ **Reboot required** — Visual indicator when a restart is required
 - 🛠️ **Admin panel** — Add, edit and remove instances via a web UI (stored in SQLite)
 - 📧 **Weekly email report** — Automatic email every Monday at 08:00 with pending updates per instance
 - 🧪 **Test mode** — Redirect all emails to a test recipient without affecting production
-- 🔐 **Authentication** — Password protected via `.env`
+- 🔐 **Authentication** — Admin account setup on first run, password stored as hash in the database
+- 🔑 **Two-factor authentication** — TOTP-based 2FA via any authenticator app
+- 🔁 **Password reset** — Reset password via email link
+- 💾 **Export / Import** — Export and import instance configuration as JSON
 - 🔔 **Attention favicon** — Favicon blinks when updates or a reboot is required
+- 🌗 **Light / Dark theme** — Theme toggle with system preference detection
 - 🌐 **Multilingual** — EN / NL / FR / DE / ES
 
 ## Quick start
@@ -36,8 +41,6 @@ services:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ./data:/data
     networks:
@@ -56,30 +59,10 @@ services:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
-    env_file:
-      - .env
     volumes:
       - ./data:/data
     ports:
       - "5000:5000"
-```
-
-Create a `.env` file:
-
-```env
-# Authentication
-APP_PASSWORD=your_password
-SECRET_KEY=your_random_secret_key
-
-# SMTP
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your@email.com
-SMTP_PASS=your_app_password
-SMTP_FROM=HA Fleet Monitor <your@email.com>
-SMTP_TEST_MODE=false
-SMTP_TEST_RECIPIENT=your@email.com
-SMTP_ADMIN_CC=your@email.com
 ```
 
 Then start:
@@ -89,6 +72,8 @@ docker compose up -d
 ```
 
 The dashboard is available at the configured proxy URL, or at `http://localhost:5000` when using the standalone setup.
+
+On first run you will be redirected to `/setup` to create your admin account (email + password).
 
 ## Supported HA Setups
 

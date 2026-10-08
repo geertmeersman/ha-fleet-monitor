@@ -12,6 +12,12 @@ msgstr "Loading..."
 msgid "Admin"
 msgstr "Admin"
 
+msgid "Instances"
+msgstr "Instances"
+
+msgid "Settings"
+msgstr "Settings"
+
 msgid "Logout"
 msgstr "Logout"
 
@@ -177,6 +183,129 @@ msgstr "Invalid password"
 msgid "Back to dashboard"
 msgstr "Back to dashboard"
 
+msgid "Setup"
+msgstr "Setup"
+
+msgid "Welcome! Create your admin account to get started."
+msgstr "Welcome! Create your admin account to get started."
+
+msgid "Create account"
+msgstr "Create account"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Account"
+msgstr "Account"
+
+msgid "New password (leave blank to keep current)"
+msgstr "New password (leave blank to keep current)"
+
+msgid "Forgot password?"
+msgstr "Forgot password?"
+
+msgid "Forgot password"
+msgstr "Forgot password"
+
+msgid "Send reset link"
+msgstr "Send reset link"
+
+msgid "A reset link will be sent to your admin email address."
+msgstr "A reset link will be sent to your admin email address."
+
+msgid "Reset link sent to your admin email."
+msgstr "Reset link sent to your admin email."
+
+msgid "No admin email configured."
+msgstr "No admin email configured."
+
+msgid "Failed to send email. Check SMTP settings."
+msgstr "Failed to send email. Check SMTP settings."
+
+msgid "Back to login"
+msgstr "Back to login"
+
+msgid "Test"
+msgstr "Test"
+
+msgid "Test email sent successfully."
+msgstr "Test email sent successfully."
+
+msgid "Report schedule"
+msgstr "Report schedule"
+
+msgid "Day"
+msgstr "Day"
+
+msgid "Hour"
+msgstr "Hour"
+
+msgid "Monday"
+msgstr "Monday"
+
+msgid "Tuesday"
+msgstr "Tuesday"
+
+msgid "Wednesday"
+msgstr "Wednesday"
+
+msgid "Thursday"
+msgstr "Thursday"
+
+msgid "Friday"
+msgstr "Friday"
+
+msgid "Saturday"
+msgstr "Saturday"
+
+msgid "Sunday"
+msgstr "Sunday"
+
+msgid "Send"
+msgstr "Send"
+
+msgid "This will send the report to"
+msgstr "This will send the report to"
+
+msgid "Test mode active"
+msgstr "Test mode active"
+
+msgid "No recipients configured."
+msgstr "No recipients configured."
+
+msgid "SMTP configured"
+msgstr "SMTP configured"
+
+msgid "SMTP not configured"
+msgstr "SMTP not configured"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Reset password"
+msgstr "Reset password"
+
+msgid "New password"
+msgstr "New password"
+
+msgid "Current password (required to change password)"
+msgstr "Current password (required to change password)"
+
+msgid "Confirm new password"
+msgstr "Confirm new password"
+
+msgid "Current password is required to change password."
+msgstr "Current password is required to change password."
+
+msgid "Passwords do not match."
+msgstr "Passwords do not match."
+
+msgid "Current password is incorrect."
+msgstr "Current password is incorrect."
+
+msgid "No email set — password reset via email will not work."
+msgstr "No email set — password reset via email will not work."
+
 msgid "Two-factor authentication"
 msgstr "Two-factor authentication"
 
@@ -224,3 +353,54 @@ msgstr "Verify"
 
 msgid "Back"
 msgstr "Back"
+
+msgid "SMTP configured"
+msgstr "SMTP configured"
+
+msgid "SMTP not configured"
+msgstr "SMTP not configured"
+
+msgid "SMTP Host"
+msgstr "SMTP Host"
+
+msgid "SMTP Port"
+msgstr "SMTP Port"
+
+msgid "SMTP Username"
+msgstr "SMTP Username"
+
+msgid "SMTP Password (leave blank to keep current)"
+msgstr "SMTP Password (leave blank to keep current)"
+
+msgid "From address"
+msgstr "From address"
+
+msgid "Test mode"
+msgstr "Test mode"
+
+msgid "Test recipient"
+msgstr "Test recipient"
+
+msgid "Save & continue"
+msgstr "Save & continue"
+
+msgid "Skip"
+msgstr "Skip"
+
+msgid "Configure SMTP to enable email reports and password reset."
+msgstr "Configure SMTP to enable email reports and password reset."
+
+msgid "Without SMTP, password reset via email will not work."
+msgstr "Without SMTP, password reset via email will not work."
+
+msgid "Instance saved."
+msgstr "Instance saved."
+
+msgid "Account saved."
+msgstr "Account saved."
+
+msgid "SMTP saved."
+msgstr "SMTP saved."
+
+msgid "Schedule saved."
+msgstr "Schedule saved."
