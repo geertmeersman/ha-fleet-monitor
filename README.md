@@ -66,7 +66,7 @@ No need to clone the repository. Create a `docker-compose.yml`:
 
 ```yaml
 services:
-  ha-monitor:
+  ha-fleet-monitor:
     image: geertmeersman/ha-fleet-monitor:latest
     container_name: ha-fleet-monitor
     restart: unless-stopped
@@ -96,7 +96,7 @@ The dashboard is available at the configured proxy URL, or add `ports: - "5000:5
 
 ```bash
 git clone <your-repo-url>
-cd ha-monitor
+cd ha-fleet-monitor
 ```
 
 ### 2. Configure environment variables
