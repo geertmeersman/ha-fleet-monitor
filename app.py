@@ -287,8 +287,9 @@ def set_lang(lang):
     if referrer:
         from urllib.parse import urlparse
 
-        parsed = urlparse(referrer)
-        if parsed.netloc and parsed.netloc != urlparse(request.host_url).netloc:
+        normalized_referrer = referrer.replace("\\", "/")
+        parsed = urlparse(normalized_referrer)
+        if parsed.netloc or parsed.scheme:
             referrer = None
     return redirect(referrer or url_for("index"))
 
