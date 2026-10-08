@@ -37,6 +37,34 @@ def init_db():
             conn.execute("ALTER TABLE instances ADD COLUMN managed INTEGER NOT NULL DEFAULT 0")
         except Exception:
             pass
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS settings (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        """)
+
+
+def get_setting(key):
+    with get_db() as conn:
+        row = conn.execute("SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+        return row["value"] if row else None
+
+
+def set_setting(key, value):
+    with get_db() as conn:
+        conn.execute(
+            """
+            INSERT INTO settings (key, value) VALUES (?, ?)
+            ON CONFLICT(key) DO UPDATE SET value=excluded.value
+        """,
+            (key, value),
+        )
+
+
+def delete_setting(key):
+    with get_db() as conn:
+        conn.execute("DELETE FROM settings WHERE key = ?", (key,))
 
 
 def get_instances():

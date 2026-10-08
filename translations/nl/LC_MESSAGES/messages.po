@@ -176,3 +176,51 @@ msgstr "Ongeldig wachtwoord"
 
 msgid "Back to dashboard"
 msgstr "Terug naar dashboard"
+
+msgid "Two-factor authentication"
+msgstr "Twee-factor authenticatie"
+
+msgid "2FA is enabled"
+msgstr "2FA is ingeschakeld"
+
+msgid "2FA is not enabled"
+msgstr "2FA is niet ingeschakeld"
+
+msgid "Set up 2FA"
+msgstr "2FA instellen"
+
+msgid "Disable 2FA"
+msgstr "2FA uitschakelen"
+
+msgid "Are you sure you want to disable 2FA?"
+msgstr "Weet je zeker dat je 2FA wil uitschakelen?"
+
+msgid "Or enter this key manually:"
+msgstr "Of voer deze sleutel manueel in:"
+
+msgid "Click to copy"
+msgstr "Klik om te kopiëren"
+
+msgid "Copied!"
+msgstr "Gekopieerd!"
+
+msgid "Invalid code"
+msgstr "Ongeldige code"
+
+msgid "Scan the QR code with your authenticator app, then enter the code to confirm."
+msgstr "Scan de QR code met je authenticator app en voer de code in ter bevestiging."
+
+msgid "6-digit code"
+msgstr "6-cijferige code"
+
+msgid "Confirm"
+msgstr "Bevestigen"
+
+msgid "Authenticator code"
+msgstr "Authenticator code"
+
+msgid "Verify"
+msgstr "Verifiëren"
+
+msgid "Back"
+msgstr "Terug"

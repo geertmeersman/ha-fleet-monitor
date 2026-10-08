@@ -28,6 +28,20 @@
             </div>
             {% endif %}
 
+            {% if step == 'totp' %}
+            <form method="POST" action="/login/totp" class="space-y-4">
+                <div>
+                    <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Authenticator code') }}</label>
+                    <input type="text" name="code" autofocus autocomplete="one-time-code" inputmode="numeric" maxlength="6"
+                        class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 tracking-widest text-center focus:outline-none focus:border-sky-500">
+                </div>
+                <button type="submit"
+                    class="w-full px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white font-semibold">
+                    {{ _('Verify') }}
+                </button>
+                <a href="/login" class="block text-center text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">← {{ _('Back') }}</a>
+            </form>
+            {% else %}
             <form method="POST" action="/login" class="space-y-4">
                 <div>
                     <label class="block text-xs text-slate-500 dark:text-slate-400 mb-1">{{ _('Password') }}</label>
@@ -39,6 +53,7 @@
                     {{ _('Login') }}
                 </button>
             </form>
+            {% endif %}
         </div>
         {{ footer(app_version) }}
     </div>

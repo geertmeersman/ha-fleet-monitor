@@ -30,7 +30,8 @@
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-8">
+        <!-- Instance form -->
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
             <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4" id="form-title">{{ _('Add instance') }}</h2>
             <div class="grid grid-cols-1 gap-3">
                 <input id="f-id"    type="text"     placeholder="{{ _('ID (e.g. home)') }}"           class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-sky-500">
@@ -48,20 +49,53 @@
             </div>
         </div>
 
-        <div id="instances-list" class="space-y-3"></div>
+        <!-- Instances list -->
+        <div id="instances-list" class="space-y-3 mb-6"></div>
 
-        <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <!-- Email report -->
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
             <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Weekly report is sent every Monday at 08:00.') }}</span>
             <button onclick="sendReport(this)" class="px-4 py-2 text-sm rounded bg-emerald-700 hover:bg-emerald-600 text-white">📧 {{ _('Send report now') }}</button>
         </div>
 
-        <div class="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <!-- 2FA -->
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">🔐 {{ _('Two-factor authentication') }}</p>
+                    <p class="text-xs mt-0.5" id="2fa-status-text"></p>
+                </div>
+                <div id="2fa-actions"></div>
+            </div>
+            <div id="2fa-setup" class="hidden mt-4 space-y-4">
+                <div class="flex gap-6 items-start">
+                    <div id="2fa-qr" class="bg-white p-3 rounded-lg shrink-0"></div>
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Scan the QR code with your authenticator app, then enter the code to confirm.') }}</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ _('Or enter this key manually:') }}</p>
+                        <code id="2fa-secret" class="block text-xs font-mono bg-slate-100 dark:bg-slate-700 px-3 py-2 rounded tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-all" onclick="copySecret(this)" title="{{ _('Click to copy') }}"></code>
+                        <p id="2fa-copied" class="text-xs text-emerald-500 hidden">{{ _('Copied!') }}</p>
+                    </div>
+                </div>
+                <div class="flex gap-2 items-center">
+                    <input id="2fa-code" type="text" inputmode="numeric" maxlength="6" placeholder="{{ _('6-digit code') }}"
+                        class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded px-3 py-2 text-sm text-slate-800 dark:text-slate-100 w-36 tracking-widest text-center focus:outline-none focus:border-sky-500">
+                    <button onclick="confirm2fa()" class="px-4 py-2 text-sm rounded bg-sky-600 hover:bg-sky-500 text-white">{{ _('Confirm') }}</button>
+                    <button onclick="cancel2fa()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">{{ _('Cancel') }}</button>
+                </div>
+                <p id="2fa-error" class="text-xs text-rose-500 hidden"></p>
+            </div>
+        </div>
+
+        <!-- Export / Import -->
+        <div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-xl p-5 mb-6 flex items-center justify-between">
             <span class="text-xs text-slate-400 dark:text-slate-500">{{ _('Export or import your instance configuration.') }}</span>
             <div class="flex gap-2">
                 <button onclick="exportConfig()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬇️ {{ _('Export') }}</button>
                 <button onclick="openImportModal()" class="px-4 py-2 text-sm rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-300">⬆️ {{ _('Import') }}</button>
             </div>
         </div>
+
         {{ footer(app_version) }}
     </div>
 
@@ -107,6 +141,12 @@
             importInvalid: "{{ _('Invalid entries missing required fields') }}",
             sending: "{{ _('Sending...') }}",
             sent: "{{ _('Sent') }}",
+            twofa_enabled: "{{ _('2FA is enabled') }}",
+            twofa_disabled: "{{ _('2FA is not enabled') }}",
+            twofa_setup: "{{ _('Set up 2FA') }}",
+            twofa_disable: "{{ _('Disable 2FA') }}",
+            twofa_disable_confirm: "{{ _('Are you sure you want to disable 2FA?') }}",
+            twofa_invalid_code: "{{ _('Invalid code') }}",
         };
 
         async function loadInstances() {
@@ -170,6 +210,77 @@
             loadInstances();
         }
 
+        async function sendReport(btn) {
+            btn.disabled = true;
+            btn.textContent = T.sending;
+            await fetch('/api/send-report', { method: 'POST' });
+            btn.textContent = '✓ ' + T.sent;
+        }
+
+        // 2FA
+        async function load2faStatus() {
+            const res = await fetch('/api/2fa/status');
+            const data = await res.json();
+            const statusText = document.getElementById('2fa-status-text');
+            const actions = document.getElementById('2fa-actions');
+            if (data.enabled) {
+                statusText.textContent = T.twofa_enabled;
+                statusText.className = 'text-xs mt-0.5 text-emerald-500 dark:text-emerald-400';
+                actions.innerHTML = `<button onclick="disable2fa()" class="px-3 py-1.5 text-xs rounded bg-rose-700 hover:bg-rose-600 text-white">${T.twofa_disable}</button>`;
+            } else {
+                statusText.textContent = T.twofa_disabled;
+                statusText.className = 'text-xs mt-0.5 text-slate-400 dark:text-slate-500';
+                actions.innerHTML = `<button onclick="setup2fa()" class="px-3 py-1.5 text-xs rounded bg-sky-600 hover:bg-sky-500 text-white">${T.twofa_setup}</button>`;
+            }
+        }
+
+        async function setup2fa() {
+            const res = await fetch('/api/2fa/setup');
+            const data = await res.json();
+            document.getElementById('2fa-qr').innerHTML = data.svg;
+            document.getElementById('2fa-secret').textContent = data.secret;
+            document.getElementById('2fa-setup').classList.remove('hidden');
+            document.getElementById('2fa-code').value = '';
+            document.getElementById('2fa-error').classList.add('hidden');
+            document.getElementById('2fa-actions').innerHTML = '';
+        }
+
+        function cancel2fa() {
+            document.getElementById('2fa-setup').classList.add('hidden');
+            load2faStatus();
+        }
+
+        async function confirm2fa() {
+            const code = document.getElementById('2fa-code').value.trim();
+            const res = await fetch('/api/2fa/confirm', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({code})
+            });
+            if (res.ok) {
+                document.getElementById('2fa-setup').classList.add('hidden');
+                load2faStatus();
+            } else {
+                const err = document.getElementById('2fa-error');
+                err.textContent = T.twofa_invalid_code;
+                err.classList.remove('hidden');
+            }
+        }
+
+        async function disable2fa() {
+            if (!confirm(T.twofa_disable_confirm)) return;
+            await fetch('/api/2fa/disable', {method: 'POST'});
+            load2faStatus();
+        }
+
+        function copySecret(el) {
+            navigator.clipboard.writeText(el.textContent);
+            const copied = document.getElementById('2fa-copied');
+            copied.classList.remove('hidden');
+            setTimeout(() => copied.classList.add('hidden'), 2000);
+        }
+
+        // Import / Export
         let importData = null;
 
         function openImportModal() {
@@ -237,14 +348,8 @@
             a.click();
         }
 
-        async function sendReport(btn) {
-            btn.disabled = true;
-            btn.textContent = T.sending;
-            await fetch('/api/send-report', { method: 'POST' });
-            btn.textContent = '✓ ' + T.sent;
-        }
-
         loadInstances();
+        load2faStatus();
 
         fetch('/api/config').then(r => r.json()).then(cfg => {
             if (cfg.test_mode) {
