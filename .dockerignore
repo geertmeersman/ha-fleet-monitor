@@ -1,0 +1,16 @@
+# Alles uitsluiten
+*
+
+# Enkel noodzakelijke bestanden toelaten
+!app.py
+!db.py
+!requirements.txt
+!VERSION
+!tailwind.css
+!tailwind.config.js
+!templates/
+!templates/**
+!translations/
+!translations/**
+!static/
+!static/**
