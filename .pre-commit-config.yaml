@@ -43,7 +43,7 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: python3 -m pytest tests/ -q
+        entry: ./scripts/run_tests.sh
         language: system
         pass_filenames: false
         stages: [pre-push]
