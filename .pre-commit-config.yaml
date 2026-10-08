@@ -43,7 +43,7 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: /volumes/git/setup/docker-build/ha-monitor/.venv/bin/python -m pytest tests/ -q
+        entry: python3 -m pytest tests/ -q
         language: system
         pass_filenames: false
         stages: [pre-push]
