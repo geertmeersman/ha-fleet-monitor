@@ -404,3 +404,6 @@ msgstr "SMTP opgeslagen."
 
 msgid "Schedule saved."
 msgstr "Planning opgeslagen."
+
+msgid "SMTP test failed. Check your configuration."
+msgstr "SMTP test mislukt. Controleer uw configuratie."
