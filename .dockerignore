@@ -1,7 +1,7 @@
-# Alles uitsluiten
+# Exclude everything
 *
 
-# Enkel noodzakelijke bestanden toelaten
+# Only allow necessary files
 !app.py
 !db.py
 !requirements.txt
