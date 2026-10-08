@@ -87,6 +87,30 @@ msgstr "El informe semanal se envía cada lunes a las 08:00."
 msgid "Send report now"
 msgstr "Enviar informe ahora"
 
+msgid "Export"
+msgstr "Exportar"
+
+msgid "Export or import your instance configuration."
+msgstr "Exporte o importe la configuración de sus instancias."
+
+msgid "Import"
+msgstr "Importar"
+
+msgid "Import done"
+msgstr "Importación completada"
+
+msgid "Drop JSON file here or click to browse"
+msgstr "Suelte el archivo JSON aquí o haga clic para explorar"
+
+msgid "added"
+msgstr "añadido"
+
+msgid "skipped (already exists)"
+msgstr "omitido (ya existe)"
+
+msgid "Invalid entries missing required fields"
+msgstr "Entradas inválidas con campos obligatorios faltantes"
+
 msgid "Sending..."
 msgstr "Enviando..."
 
