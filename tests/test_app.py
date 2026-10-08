@@ -96,6 +96,29 @@ def test_upsert_instance_updates_existing(auth_client):
     assert match["name"] == "Updated"
 
 
+def test_add_instance_managed_flag(auth_client):
+    payload = {
+        "id": "mgd",
+        "name": "Managed",
+        "url": "https://mgd.example.com",
+        "token": "tok",
+        "email": "",
+        "managed": True,
+    }
+    auth_client.post("/api/instances", data=json.dumps(payload), content_type="application/json")
+    instances = auth_client.get("/api/instances").get_json()
+    match = next(i for i in instances if i["id"] == "mgd")
+    assert match["managed"] == 1
+
+
+def test_add_instance_monitored_by_default(auth_client):
+    payload = {"id": "mon", "name": "Monitored", "url": "https://mon.example.com", "token": "tok", "email": ""}
+    auth_client.post("/api/instances", data=json.dumps(payload), content_type="application/json")
+    instances = auth_client.get("/api/instances").get_json()
+    match = next(i for i in instances if i["id"] == "mon")
+    assert not match["managed"]
+
+
 # --- Config API ---
 
 
