@@ -113,7 +113,7 @@ docker compose up -d --build
 
 The dashboard is available at the configured proxy URL, or at `http://localhost:5000` when using the standalone setup.
 
-### 4. Add your HA instances
+### 3. Build and start
 
 On first run, go to `http://localhost:5000` — you will be redirected to the setup page to create your admin account (email + password). After that, go to `http://localhost:5000/admin` to add your Home Assistant instances. You'll need a long-lived access token from each HA instance: **Profile → Security → Long-Lived Access Tokens**.
 
