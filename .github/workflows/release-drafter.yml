@@ -7,6 +7,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: release-drafter
+  cancel-in-progress: true
+
 jobs:
   update_release_draft:
     name: ✏️ Draft release
