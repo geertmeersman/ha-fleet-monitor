@@ -29,6 +29,14 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 - 🌗 **Light / Dark theme** — Theme toggle with system preference detection
 - 🌐 **Multilingual** — EN / NL / FR / DE / ES
 
+## Tags
+
+| Tag | Description |
+|-----|-------------|
+| `latest` | Latest stable release |
+| `v1.2.3` | Specific release version |
+| `main` | Latest commit on main branch (may be unstable) |
+
 ## Quick start
 
 Create a `docker-compose.yml`:
