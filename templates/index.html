@@ -149,7 +149,7 @@
 
                 document.getElementById('last-update').innerText = T.lastUpdated + ': ' + new Date().toLocaleTimeString();
 
-                const hasUpdates = instances.some(i => i.updates.length > 0 || i.reboot_required);
+                const hasUpdates = instances.some(i => i.managed && (i.updates.length > 0 || i.reboot_required));
                 updateFavicon(hasUpdates);
             } catch (err) {
                 console.error("Error fetching status:", err);
