@@ -32,7 +32,7 @@ pre-commit install --hook-type commit-msg
 mkdir data
 ```
 
-All configuration (SECRET_KEY, SMTP, 2FA, schedule) is stored in the database. On first run, go to `http://localhost:5000` to create your admin account via the setup page.
+All configuration (SMTP, 2FA, schedule) is stored in the database. On first run, go to `http://localhost:5000` to create your admin account via the setup page.
 
 5. Start the dev server:
 
@@ -98,4 +98,5 @@ GitHub Actions runs the following jobs on every push and pull request to `main`:
 | Job | What it does |
 |-----|-------------|
 | `ruff` | Lint + format check |
+| `pytest` | Runs the test suite |
 | `docker` | Verifies the Docker image builds cleanly |
