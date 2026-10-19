@@ -285,7 +285,7 @@ def set_lang(lang):
         session["lang"] = lang
     tab = request.args.get("tab")
     if tab == "settings":
-        return redirect(url_for("admin_tab", tab="settings"))
+        return redirect(url_for("admin", tab="settings"))
     return redirect(url_for("index"))
 
 
