@@ -90,6 +90,10 @@ On first run you will be redirected to `/setup` to create your admin account (em
 | HAOS / Supervised | ✅ via `update.home_assistant_core_update` | ✅ via `update.*` entities |
 | Docker (custom sensors) | ✅ via `sensor.current_version` | ✅ via `sensor.docker_hub` |
 
+## Base image
+
+`python:3.13-slim` — currently pinned to `3.13.17-slim`
+
 ## Links
 
 - 📖 [Full documentation & source code](https://github.com/geertmeersman/ha-fleet-monitor)

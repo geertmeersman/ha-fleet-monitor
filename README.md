@@ -56,6 +56,10 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 - 🌗 **Light / Dark theme** — Theme toggle with system preference detection
 - 🌐 **Multilingual** — EN / NL / FR / DE / ES
 
+## Base image
+
+`python:3.13-slim` — currently pinned to `3.13.17-slim`
+
 ## Stack
 
 - **Backend**: Python / Flask
