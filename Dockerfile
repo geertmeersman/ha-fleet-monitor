@@ -1,5 +1,5 @@
-# python:3.13-slim 3.13.17-slim
-FROM python:3.13-slim@sha256:57b29a7c050c4e679e4bea572e14b3965cf4b5839de2da49d55e49ffc4024f39
+# python:3.13-slim 3.13.18-slim
+FROM python:3.13-slim@sha256:b3575dcf816cdacc5292df77a6e3e59b8941631078373a045efa2ac1e9c5c3b2
 
 WORKDIR /app
 
