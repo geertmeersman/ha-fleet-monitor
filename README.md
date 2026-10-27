@@ -58,7 +58,7 @@ A self-hosted dashboard to monitor and manage multiple Home Assistant instances 
 
 ## Base image
 
-`python:3.13-slim` — currently pinned to `3.13.17-slim`
+`python:3.13-slim` — currently pinned to `3.13.18-slim`
 
 ## Stack
 

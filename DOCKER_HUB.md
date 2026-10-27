@@ -92,7 +92,7 @@ On first run you will be redirected to `/setup` to create your admin account (em
 
 ## Base image
 
-`python:3.13-slim` — currently pinned to `3.13.17-slim`
+`python:3.13-slim` — currently pinned to `3.13.18-slim`
 
 ## Links
 
