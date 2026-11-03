@@ -12,7 +12,7 @@ jobs:
       github.event.workflow_run.conclusion == 'success' &&
       (
         github.event.workflow_run.actor.login == 'github-actions[bot]' ||
-        github.event.workflow_run.actor.login == 'dependabot[bot]' ||
+        github.event.workflow_run.actor.login == 'dependabot[bot]'
       )
     permissions:
       contents: write
@@ -36,3 +36,4 @@ jobs:
               pull_number: prs.data[0].number,
               merge_method: 'squash',
             });
+
